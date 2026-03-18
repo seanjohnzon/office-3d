@@ -17,6 +17,10 @@ import usoppAvatar   from './assets/avatars/usopp-3d.png'
 const AVATAR_MAP = { Nami: namiAvatar, Franky: frankyAvatar, Chopper: chopperAvatar, Robin: robinAvatar, Brook: brookAvatar, Sanji: sanjiAvatar, Usopp: usoppAvatar }
 const STATE_COLOR = { idle: '#44DD77', working: '#4488FF', thinking: '#FFCC00', offline: '#555566', standby: '#AA8833' }
 const STATE_LABEL = { idle: 'Idle', working: 'Working', thinking: 'Thinking', offline: 'Offline', standby: 'Standby' }
+const STATE_ABBR  = { idle: 'IDL', working: 'WRK', thinking: 'THK', offline: 'OFF', standby: 'SBY' }
+
+// ══ Status context — passes live gateway data into Canvas ════════════════
+const StatusContext = React.createContext([])
 
 // ?????? Voxel character configs ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 const CHAR_CFG = {
@@ -387,8 +391,9 @@ function HoverPortrait({ avatarUrl, agentName, agentState, hovered }) {
 }
 
 // ?????? Desk geometry ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-function Desk({ agentColor, agentState }) {
+function Desk({ agentColor, agentState, agentName }) {
   const monitorGlow = agentState === 'working' ? 1.0 : agentState === 'thinking' ? 0.5 : agentState === 'offline' ? 0 : 0.12
+  const hudLabel = agentName ? `${agentName.toUpperCase().slice(0,4)} | ${STATE_ABBR[agentState] || 'IDL'}` : ''
   return (
     <group>
       <RoundedBox args={[2.0,0.09,1.0]} radius={0.04} position={[0,0.72,0]} castShadow receiveShadow>
@@ -414,6 +419,21 @@ function Desk({ agentColor, agentState }) {
         <mesh position={[0,0,0.03]}><boxGeometry args={[0.76,0.42,0.01]} /><meshStandardMaterial color={agentState === 'offline' ? '#111' : '#001a33'} emissive={agentColor} emissiveIntensity={monitorGlow} /></mesh>
         <mesh position={[0,-0.35,0.03]}><boxGeometry args={[0.07,0.16,0.07]} /><meshStandardMaterial color="#222" /></mesh>
         <mesh position={[0,-0.44,0.06]}><boxGeometry args={[0.24,0.03,0.16]} /><meshStandardMaterial color="#222" /></mesh>
+        {/* Monitor HUD text */}
+        {agentName && agentState !== 'offline' && (
+          <Text
+            position={[0, 0.04, 0.06]}
+            fontSize={0.07}
+            color={agentColor}
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.008}
+            outlineColor="#000020"
+            renderOrder={5}
+          >
+            {hudLabel}
+          </Text>
+        )}
       </group>
       <mesh position={[0,0.775,0.12]} receiveShadow><boxGeometry args={[0.55,0.02,0.18]} /><meshStandardMaterial color="#222233" /></mesh>
       <mesh position={[0,0.775,0.51]}><boxGeometry args={[2.0,0.03,0.02]} /><meshStandardMaterial color={agentColor} emissive={agentColor} emissiveIntensity={0.6} /></mesh>
@@ -528,7 +548,7 @@ function AgentStation({ agent, agentState, onClick }) {
     <>
       {/* Fixed desk ??? always at agent base position */}
       <group position={[px, 0, pz]}>
-        <Desk agentColor={agent.color} agentState={agentState} />
+        <Desk agentColor={agent.color} agentState={agentState} agentName={agent.name} />
       </group>
 
       {/* Animated character group */}
@@ -640,7 +660,156 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.32,0.06]} fontSize={0.19} color="#333" anchorX="center">ACTIVE TASKS</Text><Text position={[0,0.0,0.06]} fontSize={0.13} color="#777" anchorX="center">Sprint 2 · Phase D2.4</Text><Text position={[0,-0.3,0.06]} fontSize={0.11} color="#999" anchorX="center">D2.3 ✓  Sanji + Usopp Live  →  D2.4</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.22} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.14} color="#444" anchorX="center">D2.5 Task Flow Active</Text><Text position={[0,-0.32,0.06]} fontSize={0.11} color="#777" anchorX="center">CREW-011 ✓  CREW-012 → QA</Text></group>)
+}
+
+// ══ Task Flow Particles — data packets flying between working agents ══════════════════
+function TaskFlowParticles() {
+  const statuses = React.useContext(StatusContext)
+  const maxParticles = 40
+  // Each particle: { active, t, from[3], to[3], color, duration }
+  const particles = useRef(
+    Array.from({ length: maxParticles }, () => ({ active: false, t: 0, from: [0,0,0], to: [0,0,0], color: '#4488FF', duration: 3 }))
+  )
+  const meshRefs = useRef([])
+  const spawnTimers = useRef({}) // name -> time until next spawn
+
+  // Get desk world position for an agent (desk surface height ~1.0)
+  function deskPos(agent) {
+    return [agent.position[0], 1.1, agent.position[2]]
+  }
+
+  useFrame((_, dt) => {
+    const workingAgents = CREW.filter(a => {
+      const st = statuses.find(s => s.name === a.name)?.state || 'idle'
+      return st === 'working' || st === 'thinking'
+    })
+
+    // Tick spawn timers for working agents
+    workingAgents.forEach(agent => {
+      if (spawnTimers.current[agent.name] === undefined) spawnTimers.current[agent.name] = Math.random() * 3
+      spawnTimers.current[agent.name] -= dt
+      if (spawnTimers.current[agent.name] <= 0) {
+        // Find a free particle slot
+        const slot = particles.current.findIndex(p => !p.active)
+        if (slot !== -1 && workingAgents.length > 1) {
+          const targets = workingAgents.filter(a => a.name !== agent.name)
+          const target = targets[Math.floor(Math.random() * targets.length)]
+          const p = particles.current[slot]
+          p.active = true
+          p.t = 0
+          p.from = deskPos(agent)
+          p.to = deskPos(target)
+          p.color = agent.color
+          p.duration = 2.5 + Math.random() * 1.5
+        }
+        spawnTimers.current[agent.name] = 3 + Math.random() * 2
+      }
+    })
+
+    // Animate active particles
+    particles.current.forEach((p, i) => {
+      const mesh = meshRefs.current[i]
+      if (!mesh) return
+      if (!p.active) {
+        mesh.visible = false
+        return
+      }
+      p.t += dt / p.duration
+      if (p.t >= 1) {
+        p.active = false
+        mesh.visible = false
+        return
+      }
+      mesh.visible = true
+      // Arc: lerp X/Z, add Y lift via sine
+      const lx = p.from[0] + (p.to[0] - p.from[0]) * p.t
+      const lz = p.from[2] + (p.to[2] - p.from[2]) * p.t
+      const ly = p.from[1] + (p.to[1] - p.from[1]) * p.t + Math.sin(p.t * Math.PI) * 1.8
+      mesh.position.set(lx, ly, lz)
+      // Fade out near destination
+      const opacity = p.t < 0.75 ? 1.0 : 1.0 - (p.t - 0.75) / 0.25
+      if (mesh.material) {
+        mesh.material.color.set(p.color)
+        mesh.material.emissive.set(p.color)
+        mesh.material.opacity = opacity * 0.9
+        mesh.material.emissiveIntensity = opacity * 1.5
+      }
+    })
+  })
+
+  return (
+    <>
+      {Array.from({ length: maxParticles }, (_, i) => (
+        <mesh key={i} ref={el => { meshRefs.current[i] = el }} visible={false}>
+          <sphereGeometry args={[0.07, 8, 8]} />
+          <meshStandardMaterial
+            color={particles.current[i]?.color || '#4488FF'}
+            emissive={particles.current[i]?.color || '#4488FF'}
+            emissiveIntensity={1.5}
+            transparent
+            opacity={0.9}
+          />
+        </mesh>
+      ))}
+    </>
+  )
+}
+
+// ══ Ambient Hologram — drifts up from conf table when nobody is working ══════════════
+function AmbientHologram({ confTablePos }) {
+  const statuses = React.useContext(StatusContext)
+  const count = 18
+  const refs = useRef([])
+  // Stagger start offsets
+  const offsets = useRef(Array.from({ length: count }, (_, i) => ({
+    angle: (i / count) * Math.PI * 2,
+    phase: Math.random() * Math.PI * 2,
+    radius: 0.2 + Math.random() * 0.5,
+    speed: 0.3 + Math.random() * 0.3,
+    color: i % 2 === 0 ? '#5533FF' : '#AA44FF',
+  })))
+
+  useFrame(({ clock }) => {
+    const anyWorking = CREW.some(a => {
+      const st = statuses.find(s => s.name === a.name)?.state || 'idle'
+      return st === 'working' || st === 'thinking'
+    })
+    refs.current.forEach((mesh, i) => {
+      if (!mesh) return
+      mesh.visible = !anyWorking
+      if (!anyWorking) {
+        const o = offsets.current[i]
+        const t = clock.elapsedTime * o.speed + o.phase
+        const angle = o.angle + clock.elapsedTime * 0.4
+        const x = confTablePos[0] + Math.cos(angle) * o.radius * 0.6
+        const z = confTablePos[2] + Math.sin(angle) * o.radius * 0.6
+        const y = confTablePos[1] + 0.7 + ((t % (Math.PI * 2)) / (Math.PI * 2)) * 2.2
+        mesh.position.set(x, y, z)
+        if (mesh.material) {
+          const fadeTop = Math.min(1, (2.2 - (y - confTablePos[1] - 0.7)) / 1.0)
+          mesh.material.opacity = Math.max(0, fadeTop * 0.7)
+        }
+      }
+    })
+  })
+
+  return (
+    <>
+      {Array.from({ length: count }, (_, i) => (
+        <mesh key={i} ref={el => { refs.current[i] = el }} visible={false}>
+          <sphereGeometry args={[0.05, 6, 6]} />
+          <meshStandardMaterial
+            color={offsets.current[i].color}
+            emissive={offsets.current[i].color}
+            emissiveIntensity={2.0}
+            transparent
+            opacity={0.7}
+          />
+        </mesh>
+      ))}
+    </>
+  )
 }
 
 // ══ Agent Detail Panel (HTML overlay) ═══════════════════════════════════════════════════
@@ -720,7 +889,10 @@ function RosterBar({ statuses }) {
           </div>
         )
       })}
-      <div style={{ marginLeft:'auto',color:'#334455',fontSize:'11px' }}>Phase D2</div>
+      <div style={{ marginLeft:'auto',display:'flex',alignItems:'center',gap:'6px',color:'#88AACC',fontSize:'11px' }}>
+        <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
+        D2.5 · Live
+      </div>
     </div>
   )
 }
@@ -738,7 +910,9 @@ export default function App() {
   const selectedStatus = selectedAgent ? statuses.find(s => s.name === selectedAgent.name) : null
 
   return (
+    <StatusContext.Provider value={statuses}>
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
+      <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } }`}</style>
       <RosterBar statuses={statuses} />
       <Canvas
         shadows
@@ -774,6 +948,9 @@ export default function App() {
           />
         ))}
 
+        <TaskFlowParticles />
+        <AmbientHologram confTablePos={[0,0,2.8]} />
+
         <OrbitControls ref={orbitRef} target={[0,1,0]} enableDamping dampingFactor={0.06}
           minDistance={6} maxDistance={32} maxPolarAngle={Math.PI/2.1} />
       </Canvas>
@@ -790,5 +967,6 @@ export default function App() {
         Hover character for portrait · Drag to orbit · Scroll to zoom
       </div>
     </div>
+    </StatusContext.Provider>
   )
 }

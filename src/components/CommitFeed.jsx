@@ -1,5 +1,6 @@
 import React from 'react'
 import useGitHubCommits from '../hooks/useGitHubCommits'
+import useIsMobile from '../hooks/useIsMobile'
 
 function timeAgo(dateStr) {
   const diff = Date.now() - new Date(dateStr).getTime()
@@ -15,22 +16,24 @@ function timeAgo(dateStr) {
 
 export default function CommitFeed() {
   const commits = useGitHubCommits()
-  const visible = commits.slice(0, 4)
+  const { isMobile } = useIsMobile()
+  const visible = commits.slice(0, isMobile ? 2 : 4)
 
   return (
     <div style={{
       position: 'fixed',
-      bottom: '48px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      width: '420px',
+      bottom: isMobile ? '48px' : '48px',
+      left: isMobile ? '4px' : '50%',
+      right: isMobile ? '4px' : 'auto',
+      transform: isMobile ? 'none' : 'translateX(-50%)',
+      width: isMobile ? 'auto' : '420px',
       background: 'rgba(0, 10, 30, 0.82)',
       border: '1px solid rgba(100, 200, 255, 0.2)',
       backdropFilter: 'blur(8px)',
-      borderRadius: '8px',
-      padding: '10px 12px',
+      borderRadius: isMobile ? '6px' : '8px',
+      padding: isMobile ? '8px 8px' : '10px 12px',
       fontFamily: "'Courier New', monospace",
-      fontSize: '11px',
+      fontSize: isMobile ? '10px' : '11px',
       color: '#a0d4ff',
       zIndex: 195,
       pointerEvents: 'none',

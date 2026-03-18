@@ -1,4 +1,5 @@
 import React from 'react'
+import useIsMobile from '../hooks/useIsMobile'
 
 const SHORTCUTS = [
   { key: '1 – 7', desc: 'Focus on crew member desk' },
@@ -11,6 +12,7 @@ const SHORTCUTS = [
 ]
 
 export default function HelpOverlay({ visible, onClose }) {
+  const { isMobile } = useIsMobile()
   if (!visible) return null
   return (
     <div
@@ -18,8 +20,9 @@ export default function HelpOverlay({ visible, onClose }) {
       style={{
         position: 'fixed', inset: 0,
         background: 'rgba(0,0,0,0.75)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        display: 'flex', alignItems: isMobile ? 'flex-end' : 'center', justifyContent: 'center',
         zIndex: 500,
+        overflowY: 'auto',
       }}
     >
       <div
@@ -28,9 +31,12 @@ export default function HelpOverlay({ visible, onClose }) {
           position: 'relative',
           background: 'rgba(6,12,24,0.95)',
           border: '1px solid rgba(100,160,255,0.3)',
-          borderRadius: '16px',
-          padding: '28px 36px',
-          minWidth: '380px',
+          borderRadius: isMobile ? '16px 16px 0 0' : '16px',
+          padding: isMobile ? '20px 20px 28px' : '28px 36px',
+          minWidth: isMobile ? '100%' : '380px',
+          maxWidth: isMobile ? '100%' : 'none',
+          maxHeight: isMobile ? '70vh' : 'none',
+          overflowY: 'auto',
           animation: 'helpFadeIn 0.2s ease',
         }}
       >

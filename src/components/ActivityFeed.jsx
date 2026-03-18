@@ -1,6 +1,7 @@
 import React from 'react'
 import { CREW } from '../data/crewConfig'
 import { STATE_COLOR, STATE_LABEL } from './VoxelCharacter'
+import useIsMobile from '../hooks/useIsMobile'
 
 function useActivityFeed(statuses) {
   const prevRef = React.useRef({})
@@ -27,6 +28,11 @@ function useActivityFeed(statuses) {
 
 export default function ActivityFeed({ statuses }) {
   const events = useActivityFeed(statuses)
+  const { isMobile } = useIsMobile()
+
+  // Hide entirely on mobile
+  if (isMobile) return null
+
   return (
     <div style={{ position:'fixed',right:0,top:'60px',width:'220px',height:'320px',background:'rgba(8,18,32,0.92)',backdropFilter:'blur(8px)',borderLeft:'1px solid rgba(100,160,255,0.15)',zIndex:190,fontFamily:"'Courier New',monospace",display:'flex',flexDirection:'column',overflow:'hidden' }}>
       <div style={{ padding:'8px 12px 6px',borderBottom:'1px solid rgba(100,160,255,0.12)',color:'#88AACC',fontSize:'10px',letterSpacing:'1.2px',textTransform:'uppercase',display:'flex',alignItems:'center',gap:'6px' }}>

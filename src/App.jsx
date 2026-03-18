@@ -6,6 +6,7 @@ import { CREW } from './data/crewConfig'
 import useGatewayStatus from './data/useGatewayStatus'
 import { StatusContext } from './data/StatusContext'
 
+import useIsMobile from './hooks/useIsMobile'
 import CommitFeed from './components/CommitFeed'
 import RosterBar from './components/RosterBar'
 import ActivityFeed from './components/ActivityFeed'
@@ -82,6 +83,7 @@ function Whiteboard() {
 export default function App() {
   const statuses = useGatewayStatus()
   const orbitRef = useRef()
+  const { isMobile } = useIsMobile()
   const [selectedAgent, setSelectedAgent] = useState(null)
   const [focusTarget, setFocusTarget] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
@@ -125,9 +127,10 @@ export default function App() {
       <TaskFeed />
       <Canvas
         shadows
-        camera={{ position:[12,14,14], fov:45 }}
-        style={{ width:'100%',height:'100%',paddingTop:'60px',boxSizing:'border-box' }}
+        camera={{ position: isMobile ? [16,18,18] : [12,14,14], fov: isMobile ? 50 : 45 }}
+        style={{ width:'100%',height:'100%',paddingTop:isMobile?'44px':'60px',boxSizing:'border-box' }}
         gl={{ antialias:true }}
+        touch-action="none"
       >
         <ambientLight intensity={0.40} color="#C8D8F0" />
         <directionalLight position={[8,16,10]} intensity={1.4} color="#FFF5E0" castShadow
@@ -161,7 +164,9 @@ export default function App() {
         <AmbientHologram confTablePos={[0,0,2.8]} />
 
         <OrbitControls ref={orbitRef} target={[0,1,0]} enableDamping dampingFactor={0.06}
-          minDistance={6} maxDistance={32} maxPolarAngle={Math.PI/2.1} />
+          minDistance={6} maxDistance={32} maxPolarAngle={Math.PI/2.1}
+          touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
+          enableZoom enableRotate enablePan={!isMobile} />
         <CameraFocus target={focusTarget} orbitRef={orbitRef} />
       </Canvas>
 
@@ -175,9 +180,9 @@ export default function App() {
 
       <HelpOverlay visible={showHelp} onClose={() => setShowHelp(false)} />
 
-      <div style={{ position:'fixed',bottom:'14px',right:'18px',color:'#334455',fontFamily:'monospace',fontSize:'11px',pointerEvents:'none' }}>
+      {!isMobile && <div style={{ position:'fixed',bottom:'14px',right:'18px',color:'#334455',fontFamily:'monospace',fontSize:'11px',pointerEvents:'none' }}>
         Hover character for portrait · Drag to orbit · Scroll to zoom
-      </div>
+      </div>}
     </div>
     </StatusContext.Provider>
   )

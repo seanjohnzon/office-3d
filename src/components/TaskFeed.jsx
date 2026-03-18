@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import useIsMobile from '../hooks/useIsMobile'
 
 const STATUS_BADGES = {
   'in-progress': { emoji: '🟢', color: '#2ecc71' },
@@ -27,6 +28,7 @@ function truncate(str, max) {
 }
 
 export default function TaskFeed() {
+  const { isMobile } = useIsMobile()
   const [tasks, setTasks] = useState([])
   const [error, setError] = useState(null)
 
@@ -55,6 +57,9 @@ export default function TaskFeed() {
     const interval = setInterval(fetchTasks, 30000)
     return () => clearInterval(interval)
   }, [])
+
+  // Hide on mobile — competes with CommitFeed for space
+  if (isMobile) return null
 
   return (
     <div style={{

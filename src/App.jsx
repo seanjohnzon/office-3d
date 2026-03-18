@@ -660,7 +660,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.22} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.14} color="#444" anchorX="center">D2.5 Task Flow Active</Text><Text position={[0,-0.32,0.06]} fontSize={0.11} color="#777" anchorX="center">CREW-011 ✓  CREW-012 → QA</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.22} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.14} color="#444" anchorX="center">D2.5 ✓ Ship Complete</Text><Text position={[0,-0.32,0.06]} fontSize={0.11} color="#777" anchorX="center">CREW-011 ✓  D2.6 → Activity Feed</Text></group>)
 }
 
 // ══ Task Flow Particles — data packets flying between working agents ══════════════════
@@ -856,14 +856,30 @@ function AgentDetailPanel({ agent, status, onClose }) {
 }
 
 // ?????? Top roster HUD ??? DO NOT TOUCH ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+function useLiveClock() {
+  const [time, setTime] = React.useState(() => {
+    const d = new Date()
+    return d.toLocaleTimeString('en-US', { hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit' })
+  })
+  React.useEffect(() => {
+    const t = setInterval(() => {
+      const d = new Date()
+      setTime(d.toLocaleTimeString('en-US', { hour12: false, hour:'2-digit', minute:'2-digit', second:'2-digit' }))
+    }, 1000)
+    return () => clearInterval(t)
+  }, [])
+  return time
+}
+
 function RosterBar({ statuses }) {
+  const clock = useLiveClock()
   return (
     <div style={{ position:'fixed',top:0,left:0,right:0,height:'60px',background:'linear-gradient(135deg,#0D2137 0%,#1A2F4A 100%)',borderBottom:'1px solid rgba(100,160,255,0.25)',display:'flex',alignItems:'center',padding:'0 20px',gap:'16px',zIndex:200,fontFamily:"'Courier New',monospace",boxShadow:'0 2px 16px rgba(0,0,0,0.6)' }}>
       <div style={{ display:'flex',alignItems:'center',gap:'8px',marginRight:'10px' }}>
-        <span style={{ fontSize:'22px' }}>???</span>
+        <span style={{ fontSize:'22px' }}>⛵</span>
         <div>
           <div style={{ color:'#FFD700',fontWeight:'bold',fontSize:'13px',lineHeight:1.1 }}>STRAW HAT HQ</div>
-          <div style={{ color:'#557799',fontSize:'10px' }}>Mission Control ?? Live</div>
+          <div style={{ color:'#557799',fontSize:'10px' }}>Mission Control · Live</div>
         </div>
       </div>
       <div style={{ width:'1px',height:'36px',background:'rgba(100,160,255,0.2)' }} />
@@ -889,9 +905,12 @@ function RosterBar({ statuses }) {
           </div>
         )
       })}
-      <div style={{ marginLeft:'auto',display:'flex',alignItems:'center',gap:'6px',color:'#88AACC',fontSize:'11px' }}>
-        <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-        D2.5 · Live
+      <div style={{ marginLeft:'auto',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
+        <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
+          <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
+          D2.5 · Live
+        </div>
+        <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
       </div>
     </div>
   )

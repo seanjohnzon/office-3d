@@ -36,7 +36,7 @@ export default function SprintHUD() {
       })
       .catch(() => {
         // Offline — show hardcoded sprint progress (D2.1–D2.12 phases done)
-        setStats({ total: 15, done: 12, byStatus: { done: 12, 'in-progress': 1, queued: 2 }, offline: true })
+        setStats({ total: 15, done: 13, byStatus: { done: 13, 'in-progress': 1, queued: 1 }, offline: true })
       })
   }
 

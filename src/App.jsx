@@ -640,7 +640,50 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.32,0.06]} fontSize={0.19} color="#333" anchorX="center">ACTIVE TASKS</Text><Text position={[0,0.0,0.06]} fontSize={0.13} color="#777" anchorX="center">Sprint 2 ??? Phase D2</Text><Text position={[0,-0.3,0.06]} fontSize={0.11} color="#999" anchorX="center">CREW-009 ???  CREW-014 ???  CREW-015 ???</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.32,0.06]} fontSize={0.19} color="#333" anchorX="center">ACTIVE TASKS</Text><Text position={[0,0.0,0.06]} fontSize={0.13} color="#777" anchorX="center">Sprint 2 · Phase D2.4</Text><Text position={[0,-0.3,0.06]} fontSize={0.11} color="#999" anchorX="center">D2.3 ✓  Sanji + Usopp Live  →  D2.4</Text></group>)
+}
+
+// ══ Agent Detail Panel (HTML overlay) ═══════════════════════════════════════════════════
+function AgentDetailPanel({ agent, status, onClose }) {
+  const dotColor = STATE_COLOR[status?.state] || '#555566'
+  const avatarUrl = AVATAR_MAP[agent.name]
+  return (
+    <div style={{
+      position: 'fixed',
+      bottom: '20px',
+      left: '20px',
+      width: '260px',
+      background: 'rgba(8,18,32,0.96)',
+      border: `1px solid ${agent.color}`,
+      borderRadius: '12px',
+      padding: '18px',
+      fontFamily: "'Courier New', monospace",
+      zIndex: 300,
+      boxShadow: `0 0 18px ${agent.color}55, 0 0 4px ${agent.color}33`,
+    }}>
+      <button
+        onClick={onClose}
+        style={{ position:'absolute',top:'10px',right:'12px',background:'none',border:'none',color:'#889',fontSize:'18px',cursor:'pointer',lineHeight:1,padding:0 }}
+      >×</button>
+      {avatarUrl && (
+        <div style={{ display:'flex',justifyContent:'center',marginBottom:'12px' }}>
+          <img src={avatarUrl} alt={agent.name} style={{ width:'36px',height:'36px',borderRadius:'50%',objectFit:'cover',border:`2px solid ${agent.color}` }} />
+        </div>
+      )}
+      <div style={{ color:agent.color,fontSize:'16px',fontWeight:'bold',marginBottom:'4px' }}>{agent.name}</div>
+      <div style={{ color:'#889',fontSize:'11px',marginBottom:'12px' }}>{agent.role}</div>
+      <div style={{ display:'flex',alignItems:'center',gap:'6px',marginBottom:'8px' }}>
+        <div style={{ width:'8px',height:'8px',borderRadius:'50%',background:dotColor,boxShadow:`0 0 5px ${dotColor}`,flexShrink:0 }} />
+        <span style={{ color:dotColor,fontSize:'12px' }}>{STATE_LABEL[status?.state] || 'Idle'}</span>
+      </div>
+      {status?.model && (
+        <div style={{ color:'#557799',fontSize:'10px',marginBottom:'4px' }}>Model: {status.model}</div>
+      )}
+      {status?.outputTokens > 0 && (
+        <div style={{ color:'#557799',fontSize:'10px' }}>Tokens: {status.outputTokens}</div>
+      )}
+    </div>
+  )
 }
 
 // ?????? Top roster HUD ??? DO NOT TOUCH ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
@@ -686,10 +729,13 @@ function RosterBar({ statuses }) {
 export default function App() {
   const statuses = useGatewayStatus()
   const orbitRef = useRef()
+  const [selectedAgent, setSelectedAgent] = useState(null)
 
   function getState(name) {
     return statuses.find(s => s.name === name)?.state || 'idle'
   }
+
+  const selectedStatus = selectedAgent ? statuses.find(s => s.name === selectedAgent.name) : null
 
   return (
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
@@ -724,7 +770,7 @@ export default function App() {
             key={agent.name}
             agent={agent}
             agentState={getState(agent.name)}
-            onClick={() => {}}
+            onClick={() => setSelectedAgent(agent)}
           />
         ))}
 
@@ -732,8 +778,16 @@ export default function App() {
           minDistance={6} maxDistance={32} maxPolarAngle={Math.PI/2.1} />
       </Canvas>
 
+      {selectedAgent && (
+        <AgentDetailPanel
+          agent={selectedAgent}
+          status={selectedStatus}
+          onClose={() => setSelectedAgent(null)}
+        />
+      )}
+
       <div style={{ position:'fixed',bottom:'14px',right:'18px',color:'#334455',fontFamily:'monospace',fontSize:'11px',pointerEvents:'none' }}>
-        Hover character for portrait ?? Drag to orbit ?? Scroll to zoom
+        Hover character for portrait · Drag to orbit · Scroll to zoom
       </div>
     </div>
   )

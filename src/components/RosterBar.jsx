@@ -18,7 +18,7 @@ function useLiveClock() {
   return time
 }
 
-export default function RosterBar({ statuses, onFocusAgent, focusTarget }) {
+export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoActive }) {
   const clock = useLiveClock()
   const { isMobile } = useIsMobile()
   return (
@@ -27,7 +27,13 @@ export default function RosterBar({ statuses, onFocusAgent, focusTarget }) {
         <span style={{ fontSize:isMobile?'16px':'22px' }}>⛵</span>
         {!isMobile && <div>
           <div style={{ color:'#FFD700',fontWeight:'bold',fontSize:'13px',lineHeight:1.1 }}>STRAW HAT HQ</div>
-          <div style={{ color:'#557799',fontSize:'10px' }}>Mission Control · Live</div>
+          <div style={{ color:'#557799',fontSize:'10px',display:'flex',alignItems:'center',gap:'5px' }}>
+            Mission Control · Live
+            {demoActive && <>
+              <span style={{ display:'inline-block',width:'6px',height:'6px',borderRadius:'50%',background:'#BB88FF',boxShadow:'0 0 5px #BB88FF',animation:'pulseDot 1.4s ease-in-out infinite' }} />
+              <span style={{ color:'#BB88FF',fontSize:'9px',fontWeight:'bold',letterSpacing:'0.5px' }}>DEMO</span>
+            </>}
+          </div>
         </div>}
       </div>
       <div style={{ width:'1px',height:isMobile?'28px':'36px',background:'rgba(100,160,255,0.2)',flexShrink:0 }} />

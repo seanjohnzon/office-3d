@@ -7,6 +7,7 @@ import useGatewayStatus from './data/useGatewayStatus'
 import { StatusContext } from './data/StatusContext'
 
 import useIsMobile from './hooks/useIsMobile'
+import useDemoMode from './hooks/useDemoMode'
 import CommitFeed from './components/CommitFeed'
 import RosterBar from './components/RosterBar'
 import ActivityFeed from './components/ActivityFeed'
@@ -19,6 +20,7 @@ import NetworkLines from './components/NetworkLines'
 import AmbientHologram from './components/AmbientHologram'
 import TaskFeed from './components/TaskFeed'
 import SprintHUD from './components/SprintHUD'
+import GatewayBanner from './components/GatewayBanner'
 
 // ══ Office scenery ═══════════════════════════════════════════════════════════
 function CosmicBackdrop() {
@@ -78,12 +80,13 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.12 ✓ Mobile  D2.13 ✓ SprintHUD  D2.14 ✓ Network</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.15 → Offline Graceful Fallback Mode</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.13 ✓ SprintHUD  D2.14 ✓ Network  D2.15 ✓ Demo</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.16 → Agent Sound / Ambient FX</Text></group>)
 }
 
 // ══ Main App ═════════════════════════════════════════════════════════════════
 export default function App() {
-  const statuses = useGatewayStatus()
+  const rawStatuses = useGatewayStatus()
+  const { statuses, demoActive } = useDemoMode(rawStatuses)
   const orbitRef = useRef()
   const { isMobile } = useIsMobile()
   const [selectedAgent, setSelectedAgent] = useState(null)
@@ -123,7 +126,7 @@ export default function App() {
     <StatusContext.Provider value={statuses}>
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } } @keyframes helpFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }`}</style>
-      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} />
+      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} />
       <SprintHUD />
       <ActivityFeed statuses={statuses} />
       <CommitFeed />
@@ -183,6 +186,7 @@ export default function App() {
       )}
 
       <HelpOverlay visible={showHelp} onClose={() => setShowHelp(false)} />
+      <GatewayBanner statuses={statuses} demoActive={demoActive} />
 
       {!isMobile && <div style={{ position:'fixed',bottom:'14px',right:'18px',color:'#334455',fontFamily:'monospace',fontSize:'11px',pointerEvents:'none' }}>
         Hover character for portrait · Drag to orbit · Scroll to zoom

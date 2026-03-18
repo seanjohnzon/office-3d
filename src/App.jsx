@@ -17,6 +17,7 @@ import DeskGroup from './components/DeskGroup'
 import TaskFlowParticles from './components/TaskFlowParticles'
 import AmbientHologram from './components/AmbientHologram'
 import TaskFeed from './components/TaskFeed'
+import SprintHUD from './components/SprintHUD'
 
 // ══ Office scenery ═══════════════════════════════════════════════════════════
 function CosmicBackdrop() {
@@ -76,7 +77,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.9 ✓ Tasks  D2.10 ✓ Rings</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.11 → Help Overlay</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.10 ✓ Rings  D2.11 ✓ Help  D2.12 ✓ Mobile</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.13 → Sprint Progress HUD</Text></group>)
 }
 
 // ══ Main App ═════════════════════════════════════════════════════════════════
@@ -122,6 +123,7 @@ export default function App() {
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } } @keyframes helpFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }`}</style>
       <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} />
+      <SprintHUD />
       <ActivityFeed statuses={statuses} />
       <CommitFeed />
       <TaskFeed />

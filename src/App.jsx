@@ -11,8 +11,10 @@ import frankyAvatar  from './assets/avatars/franky.png'
 import chopperAvatar from './assets/avatars/chopper.png'
 import robinAvatar   from './assets/avatars/robin.png'
 import brookAvatar   from './assets/avatars/brook.png'
+import sanjiAvatar   from './assets/avatars/sanji-3d.png'
+import usoppAvatar   from './assets/avatars/usopp-3d.png'
 
-const AVATAR_MAP = { Nami: namiAvatar, Franky: frankyAvatar, Chopper: chopperAvatar, Robin: robinAvatar, Brook: brookAvatar }
+const AVATAR_MAP = { Nami: namiAvatar, Franky: frankyAvatar, Chopper: chopperAvatar, Robin: robinAvatar, Brook: brookAvatar, Sanji: sanjiAvatar, Usopp: usoppAvatar }
 const STATE_COLOR = { idle: '#44DD77', working: '#4488FF', thinking: '#FFCC00', offline: '#555566' }
 const STATE_LABEL = { idle: 'Idle', working: 'Working', thinking: 'Thinking', offline: 'Offline' }
 
@@ -74,6 +76,34 @@ const CHAR_CFG = {
     extras: [],
     hairShape: 'afroHat', // afro sphere + top hat
     skullFace: true,
+  },
+  Sanji: {
+    scale: 1.02,
+    skinColor: '#F4C28C', hairColor: '#C8A800',   // blonde
+    topColor: '#111111',  pantsColor: '#1A1A2A', shoeColor: '#050505',
+    extras: [
+      // Cigarette in mouth area
+      { type: 'box', size: [0.14, 0.03, 0.03], pos: [0.10, 1.04, 0.13], color: '#F5F5DC' },
+      { type: 'box', size: [0.03, 0.03, 0.03], pos: [0.22, 1.04, 0.13], color: '#FF4400' },
+      // Suit lapel detail
+      { type: 'box', size: [0.08, 0.18, 0.04], pos: [-0.06, 0.68, 0.11], color: '#222230' },
+      { type: 'box', size: [0.08, 0.18, 0.04], pos: [0.06, 0.68, 0.11], color: '#222230' },
+    ],
+    hairShape: 'sideSwept',
+  },
+  Usopp: {
+    scale: 0.98,
+    skinColor: '#8B6914', hairColor: '#1A0A00',   // dark brown
+    topColor: '#8B4513',  pantsColor: '#556B2F', shoeColor: '#2A1A00',
+    extras: [
+      // Long nose — signature sniperking
+      { type: 'box', size: [0.06, 0.06, 0.36], pos: [0, 1.02, 0.22], color: '#8B6914' },
+      // Goggles on head
+      { type: 'box', size: [0.28, 0.10, 0.08], pos: [0, 1.12, 0.09], color: '#2A4A2A' },
+      { type: 'box', size: [0.10, 0.06, 0.04], pos: [-0.12, 1.12, 0.12], color: '#4A8A4A' },
+      { type: 'box', size: [0.10, 0.06, 0.04], pos: [0.12, 1.12, 0.12], color: '#4A8A4A' },
+    ],
+    hairShape: 'curlyAfro',
   },
 }
 

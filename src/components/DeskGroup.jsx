@@ -80,6 +80,8 @@ export default function DeskGroup({ agent, agentState, onClick }) {
   const ringMatRef = useRef()
   const avatarUrl = AVATAR_MAP[agent.name]
   const ringPhase = useRef(Math.random() * Math.PI * 2)
+  const chipGroupRef = useRef()
+  const chipPhaseRef = useRef(Math.random() * Math.PI * 2)
 
   const patrol = useRef({
     wpIdx: 0,
@@ -163,6 +165,11 @@ export default function DeskGroup({ agent, agentState, onClick }) {
       const pulse = 0.3 + 0.3 * Math.sin(ringPhase.current)
       ringMatRef.current.opacity = agentState === 'offline' ? 0.08 : pulse
     }
+
+    chipPhaseRef.current += dt * (Math.PI * 2 * 0.8)
+    if (chipGroupRef.current && agentState !== 'offline') {
+      chipGroupRef.current.position.y = 1.98 + 0.04 * Math.sin(chipPhaseRef.current)
+    }
   })
 
   const initPos = [px, 0, pz + 1.1]
@@ -220,6 +227,21 @@ export default function DeskGroup({ agent, agentState, onClick }) {
         >
           {agent.name}
         </Text>
+
+        {/* Floating state chip */}
+        <group ref={chipGroupRef} position={[0, 1.98, 0]}>
+          <Text
+            fontSize={0.11}
+            color={agentState === 'offline' ? '#334455' : (STATE_COLOR[agentState] || '#aabbcc')}
+            anchorX="center"
+            anchorY="middle"
+            outlineWidth={0.010}
+            outlineColor="#000020"
+            renderOrder={11}
+          >
+            {(STATE_LABEL[agentState] || 'IDLE').toUpperCase()}
+          </Text>
+        </group>
       </group>
     </>
   )

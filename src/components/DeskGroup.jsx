@@ -83,6 +83,9 @@ export default function DeskGroup({ agent, agentState, onClick }) {
   const chipGroupRef = useRef()
   const chipPhaseRef = useRef(Math.random() * Math.PI * 2)
 
+  const lightRef = useRef()
+  const lightPhaseRef = useRef(0)
+
   const patrol = useRef({
     wpIdx: 0,
     nextWp: 1,
@@ -170,6 +173,28 @@ export default function DeskGroup({ agent, agentState, onClick }) {
     if (chipGroupRef.current && agentState !== 'offline') {
       chipGroupRef.current.position.y = 1.98 + 0.04 * Math.sin(chipPhaseRef.current)
     }
+
+    // Desk reactive lighting
+    if (lightRef.current) {
+      if (agentState === 'thinking') {
+        // 1.5Hz sine pulse between 0.6 and 1.8
+        lightPhaseRef.current += dt * (Math.PI * 2 * 1.5)
+        lightRef.current.intensity = 0.6 + 0.6 * (0.5 + 0.5 * Math.sin(lightPhaseRef.current))
+        lightRef.current.color.set('#8855FF')
+      } else if (agentState === 'working') {
+        lightRef.current.intensity = 1.8
+        lightRef.current.color.set('#FF8C00')
+      } else if (agentState === 'idle') {
+        lightRef.current.intensity = 0.5
+        lightRef.current.color.set('#4488CC')
+      } else if (agentState === 'offline' || agentState === 'coming-soon') {
+        lightRef.current.intensity = 0
+      } else {
+        // online / standby
+        lightRef.current.intensity = 0.3
+        lightRef.current.color.set('#AABBCC')
+      }
+    }
   })
 
   const initPos = [px, 0, pz + 1.1]
@@ -179,6 +204,14 @@ export default function DeskGroup({ agent, agentState, onClick }) {
       {/* Fixed desk */}
       <group position={[px, 0, pz]}>
         <Desk agentColor={agent.color} agentState={agentState} agentName={agent.name} />
+        {/* Reactive desk point light */}
+        <pointLight
+          ref={lightRef}
+          position={[0, 1.5, 0]}
+          distance={5}
+          castShadow={false}
+          intensity={0}
+        />
       </group>
 
       {/* Animated character group */}

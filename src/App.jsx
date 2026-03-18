@@ -15,8 +15,8 @@ import sanjiAvatar   from './assets/avatars/sanji-3d.png'
 import usoppAvatar   from './assets/avatars/usopp-3d.png'
 
 const AVATAR_MAP = { Nami: namiAvatar, Franky: frankyAvatar, Chopper: chopperAvatar, Robin: robinAvatar, Brook: brookAvatar, Sanji: sanjiAvatar, Usopp: usoppAvatar }
-const STATE_COLOR = { idle: '#44DD77', working: '#4488FF', thinking: '#FFCC00', offline: '#555566' }
-const STATE_LABEL = { idle: 'Idle', working: 'Working', thinking: 'Thinking', offline: 'Offline' }
+const STATE_COLOR = { idle: '#44DD77', working: '#4488FF', thinking: '#FFCC00', offline: '#555566', standby: '#AA8833' }
+const STATE_LABEL = { idle: 'Idle', working: 'Working', thinking: 'Thinking', offline: 'Offline', standby: 'Standby' }
 
 // ?????? Voxel character configs ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 const CHAR_CFG = {
@@ -312,6 +312,49 @@ function VoxelCharacter({ name, isSitting, walkPhase, bobY }) {
           </mesh>
         </>
       )}
+      {cfg.hairShape === 'sideSwept' && (
+        // Sanji: blonde side-swept bang covering one eye
+        <>
+          {/* Base hair top */}
+          <mesh position={[0, headY + 0.14, -0.02]} castShadow>
+            <boxGeometry args={[0.28, 0.12, 0.22]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+          {/* Side-swept bang — left side, angled forward */}
+          <mesh position={[-0.10, headY + 0.06, 0.08]} rotation={[0, 0, 0.5]} castShadow>
+            <boxGeometry args={[0.16, 0.22, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+        </>
+      )}
+      {cfg.hairShape === 'curlyAfro' && (
+        // Usopp: big dark curly afro
+        <>
+          {/* Main afro mass */}
+          <mesh position={[0, headY + 0.16, 0]} castShadow>
+            <boxGeometry args={[0.36, 0.24, 0.34]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          {/* Bumpy top */}
+          <mesh position={[-0.10, headY + 0.28, 0.04]} castShadow>
+            <boxGeometry args={[0.14, 0.12, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          <mesh position={[0.10, headY + 0.30, -0.04]} castShadow>
+            <boxGeometry args={[0.14, 0.14, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          {/* Wide sides */}
+          <mesh position={[0.18, headY + 0.08, 0]} castShadow>
+            <boxGeometry args={[0.08, 0.20, 0.26]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          <mesh position={[-0.18, headY + 0.08, 0]} castShadow>
+            <boxGeometry args={[0.08, 0.20, 0.26]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+        </>
+      )}
 
       {/* ?????? Character-specific extras ????????????????????????????????????????????? */}
       {cfg.extras.map((e, i) => (
@@ -435,7 +478,7 @@ function AgentStation({ agent, agentState, onClick }) {
     } else {
       bobOffset.current = 0
 
-      if (agentState === 'offline') {
+      if (agentState === 'offline' || agentState === 'standby') {
         // Stand still in front of desk
         tgtPos.current.set(px, 0, pz + 1.1)
         tgtFacing.current = Math.PI

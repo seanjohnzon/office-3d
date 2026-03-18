@@ -30,7 +30,7 @@ function NetworkLine({ startPos, endPos, color, isIntense, phaseOffset }) {
     const t = clock.getElapsedTime()
     const freq   = isIntense ? 2.0 : 1.0
     const minOp  = 0.15
-    const maxOp  = isIntense ? 0.8 : 0.6
+    const maxOp  = isIntense ? 1.0 : 0.8
     matRef.current.opacity =
       minOp + (maxOp - minOp) * (0.5 + 0.5 * Math.sin(t * Math.PI * 2 * freq + phaseOffset))
   })

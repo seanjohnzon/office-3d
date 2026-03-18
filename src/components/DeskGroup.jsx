@@ -60,7 +60,7 @@ function Desk({ agentColor, agentState, agentName }) {
       <Chair />
       <Monitor agentColor={agentColor} agentState={agentState} agentName={agentName} />
       <mesh position={[0,0.775,0.12]} receiveShadow><boxGeometry args={[0.55,0.02,0.18]} /><meshStandardMaterial color="#222233" /></mesh>
-      <mesh position={[0,0.775,0.51]}><boxGeometry args={[2.0,0.03,0.02]} /><meshStandardMaterial color={agentColor} emissive={agentColor} emissiveIntensity={0.6} /></mesh>
+      <mesh position={[0,0.775,0.51]}><boxGeometry args={[2.0,0.03,0.02]} /><meshStandardMaterial color={agentColor} emissive={agentColor} emissiveIntensity={2.5} /></mesh>
     </group>
   )
 }

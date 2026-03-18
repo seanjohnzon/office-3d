@@ -47,7 +47,7 @@ export default function AmbientHologram({ confTablePos }) {
           <meshStandardMaterial
             color={offsets.current[i].color}
             emissive={offsets.current[i].color}
-            emissiveIntensity={2.0}
+            emissiveIntensity={2.5}
             transparent
             opacity={0.7}
           />

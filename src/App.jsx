@@ -24,6 +24,7 @@ import TaskFeed from './components/TaskFeed'
 import SprintHUD from './components/SprintHUD'
 import GatewayBanner from './components/GatewayBanner'
 import CrewTicker from './components/CrewTicker'
+import SceneEffects from './components/SceneEffects'
 
 // ══ Office scenery ═══════════════════════════════════════════════════════════
 function CosmicBackdrop() {
@@ -83,7 +84,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.14 ✓ Network  D2.15 ✓ Demo  D2.16 ✓ Sound  D2.17 ✓ Ticker</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.18 ✓ Duration  D2.19 → Next</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.14 ✓ Network  D2.15 ✓ Demo  D2.16 ✓ Sound  D2.17 ✓ Ticker</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.18 ✓ Duration  D2.16-18 ✓ / D2.19 → Bloom FX</Text></group>)
 }
 
 // ══ Main App ═════════════════════════════════════════════════════════════════
@@ -191,6 +192,8 @@ export default function App() {
         <TaskFlowParticles />
         <NetworkLines />
         <AmbientHologram confTablePos={[0,0,2.8]} />
+
+        <SceneEffects />
 
         <OrbitControls ref={orbitRef} target={[0,1,0]} enableDamping dampingFactor={0.06}
           minDistance={6} maxDistance={32} maxPolarAngle={Math.PI/2.1}

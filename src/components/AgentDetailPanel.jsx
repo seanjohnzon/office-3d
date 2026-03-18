@@ -1,7 +1,7 @@
 import React from 'react'
 import { STATE_COLOR, STATE_LABEL, AVATAR_MAP } from './VoxelCharacter'
 
-export default function AgentDetailPanel({ agent, status, onClose }) {
+export default function AgentDetailPanel({ agent, status, onClose, duration }) {
   const dotColor = STATE_COLOR[status?.state] || '#555566'
   const avatarUrl = AVATAR_MAP[agent.name]
   return (
@@ -29,10 +29,15 @@ export default function AgentDetailPanel({ agent, status, onClose }) {
       )}
       <div style={{ color:agent.color,fontSize:'16px',fontWeight:'bold',marginBottom:'4px' }}>{agent.name}</div>
       <div style={{ color:'#889',fontSize:'11px',marginBottom:'12px' }}>{agent.role}</div>
-      <div style={{ display:'flex',alignItems:'center',gap:'6px',marginBottom:'8px' }}>
+      <div style={{ display:'flex',alignItems:'center',gap:'6px',marginBottom:'4px' }}>
         <div style={{ width:'8px',height:'8px',borderRadius:'50%',background:dotColor,boxShadow:`0 0 5px ${dotColor}`,flexShrink:0 }} />
         <span style={{ color:dotColor,fontSize:'12px' }}>{STATE_LABEL[status?.state] || 'Idle'}</span>
       </div>
+      {duration && (
+        <div style={{ color:'#667788',fontSize:'11px',fontFamily:"'Courier New',monospace",marginBottom:'8px' }}>
+          In state for: {duration.label}
+        </div>
+      )}
       {status?.model && (
         <div style={{ color:'#557799',fontSize:'10px',marginBottom:'4px' }}>Model: {status.model}</div>
       )}

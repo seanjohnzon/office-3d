@@ -77,7 +77,9 @@ const WAIT_RANGE = 1.4
 export default function DeskGroup({ agent, agentState, onClick }) {
   const [hovered, setHovered] = useState(false)
   const charGroupRef = useRef()
+  const ringMatRef = useRef()
   const avatarUrl = AVATAR_MAP[agent.name]
+  const ringPhase = useRef(Math.random() * Math.PI * 2)
 
   const patrol = useRef({
     wpIdx: 0,
@@ -154,6 +156,13 @@ export default function DeskGroup({ agent, agentState, onClick }) {
     const df = tgtFacing.current - g.rotation.y
     const dn = ((df + Math.PI) % (Math.PI * 2)) - Math.PI
     g.rotation.y += dn * 0.08
+
+    // Animate floor ring pulse
+    if (ringMatRef.current) {
+      ringPhase.current += dt * (agentState === 'working' ? 3.0 : agentState === 'thinking' ? 5.0 : 1.2)
+      const pulse = 0.3 + 0.3 * Math.sin(ringPhase.current)
+      ringMatRef.current.opacity = agentState === 'offline' ? 0.08 : pulse
+    }
   })
 
   const initPos = [px, 0, pz + 1.1]
@@ -174,10 +183,10 @@ export default function DeskGroup({ agent, agentState, onClick }) {
         onPointerLeave={() => setHovered(false)}
         onClick={e => { e.stopPropagation(); onClick() }}
       >
-        {/* Floor glow ring */}
+        {/* Floor glow ring — pulses at state-dependent speed */}
         <mesh rotation={[-Math.PI/2, 0, 0]} position={[0, 0.01, 0]} receiveShadow>
           <ringGeometry args={[0.30, 0.44, 32]} />
-          <meshBasicMaterial color={STATE_COLOR[agentState] || '#555'} transparent opacity={0.55} side={THREE.DoubleSide} />
+          <meshBasicMaterial ref={ringMatRef} color={STATE_COLOR[agentState] || '#555'} transparent opacity={0.45} side={THREE.DoubleSide} depthWrite={false} />
         </mesh>
 
         {/* The voxel character body */}

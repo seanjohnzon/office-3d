@@ -5,18 +5,36 @@ import * as THREE from 'three'
 import { CREW } from './data/crewConfig'
 import useGatewayStatus from './data/useGatewayStatus'
 
+// HUD bar avatars (portrait style ??? original set)
 import namiAvatar    from './assets/avatars/nami.png'
 import frankyAvatar  from './assets/avatars/franky.png'
 import chopperAvatar from './assets/avatars/chopper.png'
 import robinAvatar   from './assets/avatars/robin.png'
 import brookAvatar   from './assets/avatars/brook.png'
 
+// 3D character body avatars (Set 2 ??? full body, transparent BG)
+import nami3d    from './assets/avatars/nami-3d.png'
+import franky3d  from './assets/avatars/franky-3d.png'
+import chopper3d from './assets/avatars/chopper-3d.png'
+import robin3d   from './assets/avatars/robin-3d.png'
+import brook3d   from './assets/avatars/brook-3d.png'
+
+// Portrait avatars for HUD bar and hover cards
 export const AVATAR_MAP = {
   Nami:    namiAvatar,
   Franky:  frankyAvatar,
   Chopper: chopperAvatar,
   Robin:   robinAvatar,
   Brook:   brookAvatar,
+}
+
+// 3D body sprites for in-scene character representation
+export const AVATAR_3D_MAP = {
+  Nami:    nami3d,
+  Franky:  franky3d,
+  Chopper: chopper3d,
+  Robin:   robin3d,
+  Brook:   brook3d,
 }
 
 const STATE_COLOR = { idle: '#44DD77', working: '#4488FF', thinking: '#FFCC00', offline: '#555566' }
@@ -289,7 +307,8 @@ function AgentStation({ agent, agentState, onClick }) {
   const bodyRef = useRef()
   const [hovered, setHovered] = useState(false)
   const isSitting = agentState === 'working' || agentState === 'thinking'
-  const avatarUrl = AVATAR_MAP[agent.name]
+  const avatarUrl = AVATAR_MAP[agent.name]       // portrait for HUD + hover card
+  const body3dUrl = AVATAR_3D_MAP[agent.name]    // full-body sprite for 3D scene
 
   useFrame(({ clock }) => {
     if (bodyRef.current && isSitting) {
@@ -313,10 +332,10 @@ function AgentStation({ agent, agentState, onClick }) {
     >
       <Desk agentColor={agent.color} agentState={agentState} />
 
-      {/* Avatar as character body */}
-      {avatarUrl && (
+      {/* Avatar as character body ??? use Set 2 (3D body sprites) */}
+      {body3dUrl && (
         <AvatarBody
-          avatarUrl={avatarUrl}
+          avatarUrl={body3dUrl}
           agentState={agentState}
           bodyRef={bodyRef}
         />

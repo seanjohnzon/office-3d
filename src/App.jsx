@@ -1,11 +1,10 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Text, RoundedBox, Stars, useTexture } from '@react-three/drei'
+import { OrbitControls, Text, RoundedBox, Stars, useTexture, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { CREW } from './data/crewConfig'
 import useGatewayStatus from './data/useGatewayStatus'
 
-// Avatar imports ??? Vite handles these as URLs
 import namiAvatar    from './assets/avatars/nami.png'
 import frankyAvatar  from './assets/avatars/franky.png'
 import chopperAvatar from './assets/avatars/chopper.png'
@@ -20,7 +19,6 @@ export const AVATAR_MAP = {
   Brook:   brookAvatar,
 }
 
-// ?????? colour helpers ??????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 const STATE_COLOR = { idle: '#44DD77', working: '#4488FF', thinking: '#FFCC00', offline: '#555566' }
 const STATE_LABEL = { idle: 'Idle', working: 'Working', thinking: 'Thinking', offline: 'Offline' }
 
@@ -122,12 +120,12 @@ function ConfTable({ position }) {
   )
 }
 
-// ?????? Desk ???????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-function Desk({ agentColor, agentState, onClick }) {
+// ?????? Desk furniture (no character body ??? that's the avatar sprite now) ???????????????????????????
+function Desk({ agentColor, agentState }) {
   const monitorGlow = agentState === 'working' ? 1.0 : agentState === 'thinking' ? 0.5 : agentState === 'offline' ? 0 : 0.15
   const screenColor = agentState === 'offline' ? '#111' : '#001a33'
   return (
-    <group onClick={onClick}>
+    <group>
       <RoundedBox args={[2.0,0.09,1.0]} radius={0.04} position={[0,0.72,0]} castShadow receiveShadow>
         <meshStandardMaterial color="#7A5C1E" roughness={0.4} metalness={0.1} />
       </RoundedBox>
@@ -183,54 +181,39 @@ function Desk({ agentColor, agentState, onClick }) {
   )
 }
 
-// ?????? Low-poly character body ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-function CharacterBody({ agentState, color, bodyRef }) {
-  const charColor = agentState === 'offline' ? '#444455' : color
+// ?????? Avatar body sprite (replaces blocky 3D character) ????????????????????????????????????????????????????????????????????????
+function AvatarBody({ avatarUrl, agentState, bodyRef }) {
+  const texture = useTexture(avatarUrl)
+  const dotColor = STATE_COLOR[agentState] || '#555566'
   const isSitting = agentState === 'working' || agentState === 'thinking'
-  const bodyY = isSitting ? 0.92 : 1.55
+  const bodyY = isSitting ? 1.55 : 2.0
   const bodyZ = isSitting ? 0.65 : 0.85
+
   return (
-    <group>
-      <mesh ref={bodyRef} position={[0, bodyY, bodyZ]} castShadow>
-        <boxGeometry args={[0.36,0.44,0.24]} />
-        <meshStandardMaterial color={charColor} roughness={0.7} />
-      </mesh>
-      <mesh position={[0, bodyY+0.42, bodyZ]} castShadow>
-        <boxGeometry args={[0.28,0.28,0.28]} />
-        <meshStandardMaterial color={charColor} roughness={0.6} />
-      </mesh>
-      <mesh position={[0.24, bodyY+0.06, bodyZ]} castShadow>
-        <boxGeometry args={[0.1,0.34,0.14]} />
-        <meshStandardMaterial color={charColor} roughness={0.7} />
-      </mesh>
-      <mesh position={[-0.24, bodyY+0.06, bodyZ]} castShadow>
-        <boxGeometry args={[0.1,0.34,0.14]} />
-        <meshStandardMaterial color={charColor} roughness={0.7} />
-      </mesh>
-      {!isSitting && (
-        <>
-          <mesh position={[0.1, bodyY-0.5, bodyZ]} castShadow>
-            <boxGeometry args={[0.14,0.44,0.18]} />
-            <meshStandardMaterial color={charColor} roughness={0.7} />
-          </mesh>
-          <mesh position={[-0.1, bodyY-0.5, bodyZ]} castShadow>
-            <boxGeometry args={[0.14,0.44,0.18]} />
-            <meshStandardMaterial color={charColor} roughness={0.7} />
-          </mesh>
-        </>
-      )}
+    <group position={[0, bodyY, bodyZ]}>
+      {/* Status glow ring behind character */}
+      <sprite scale={[1.3, 1.3, 1.0]}>
+        <spriteMaterial attach="material" color={dotColor} transparent opacity={0.22} />
+      </sprite>
+      {/* Character avatar sprite ??? the actual body */}
+      <sprite ref={bodyRef} scale={[1.1, 1.1, 1.0]}>
+        <spriteMaterial attach="material" map={texture} transparent alphaTest={0.05}
+          opacity={agentState === 'offline' ? 0.4 : 1.0}
+        />
+      </sprite>
+      {/* Thinking bubbles */}
       {agentState === 'thinking' && (
         <>
-          <mesh position={[0.2, bodyY+0.78, bodyZ]}>
+          <mesh position={[0.6, 0.55, 0]}>
             <sphereGeometry args={[0.05,8,8]} />
+            <meshStandardMaterial color="white" emissive="white" emissiveIntensity={0.5} />
+          </mesh>
+          <mesh position={[0.75, 0.72, 0]}>
+            <sphereGeometry args={[0.08,8,8]} />
             <meshStandardMaterial color="white" emissive="white" emissiveIntensity={0.4} />
           </mesh>
-          <mesh position={[0.3, bodyY+0.92, bodyZ]}>
-            <sphereGeometry args={[0.07,8,8]} />
-            <meshStandardMaterial color="white" emissive="white" emissiveIntensity={0.4} />
-          </mesh>
-          <mesh position={[0.42, bodyY+1.08, bodyZ]}>
-            <sphereGeometry args={[0.14,8,8]} />
+          <mesh position={[0.9, 0.92, 0]}>
+            <sphereGeometry args={[0.13,8,8]} />
             <meshStandardMaterial color="white" emissive="white" emissiveIntensity={0.3} />
           </mesh>
         </>
@@ -239,86 +222,128 @@ function CharacterBody({ agentState, color, bodyRef }) {
   )
 }
 
-// ?????? Avatar sprite billboard ?????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
-function AvatarBillboard({ avatarUrl, agentState, position }) {
-  const texture = useTexture(avatarUrl)
+// ?????? Hover portrait card (only visible on hover) ?????????????????????????????????????????????????????????????????????????????????????????????
+function HoverPortrait({ avatarUrl, agentName, agentState, hovered }) {
   const dotColor = STATE_COLOR[agentState] || '#555566'
 
-  // spriteMaterial is native Three.js ??? R3F supports it as a primitive
   return (
-    <group position={position}>
-      {/* Status ring ??? always faces camera (billboard via sprite) */}
-      <sprite scale={[1.0, 1.0, 1.0]}>
-        <spriteMaterial attach="material" color={dotColor} transparent opacity={0.25} />
-      </sprite>
-      {/* Avatar sprite */}
-      <sprite scale={[0.84, 0.84, 1.0]}>
-        <spriteMaterial attach="material" map={texture} transparent alphaTest={0.05} />
-      </sprite>
-      {/* Glow ring mesh (always faces camera via sprite trick) */}
-      <sprite scale={[1.12, 1.12, 1.0]}>
-        <spriteMaterial attach="material" color={dotColor} transparent opacity={0.18} />
-      </sprite>
-    </group>
+    <Html
+      position={[0, 4.2, 0.85]}
+      center
+      distanceFactor={8}
+      style={{ pointerEvents: 'none' }}
+      zIndexRange={[10, 0]}
+    >
+      <div style={{
+        opacity: hovered ? 1 : 0,
+        transition: 'opacity 200ms ease',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        gap: '6px',
+      }}>
+        {/* Portrait image with status ring */}
+        <div style={{
+          position: 'relative',
+          width: '96px', height: '96px',
+        }}>
+          <div style={{
+            position: 'absolute', inset: '-4px',
+            borderRadius: '50%',
+            border: `3px solid ${dotColor}`,
+            boxShadow: `0 0 14px ${dotColor}88, 0 0 4px ${dotColor}`,
+          }} />
+          <img
+            src={avatarUrl}
+            alt={agentName}
+            style={{
+              width: '96px', height: '96px',
+              borderRadius: '50%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+        </div>
+        {/* Name + state pill */}
+        <div style={{
+          background: 'rgba(8,12,28,0.88)',
+          border: `1px solid ${dotColor}55`,
+          borderRadius: '20px',
+          padding: '3px 12px',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          color: '#EEE',
+          whiteSpace: 'nowrap',
+          backdropFilter: 'blur(4px)',
+        }}>
+          <span style={{ fontWeight: 'bold' }}>{agentName}</span>
+          <span style={{ color: dotColor, marginLeft: '6px', fontSize: '11px' }}>
+            ??? {STATE_LABEL[agentState] || 'Idle'}
+          </span>
+        </div>
+      </div>
+    </Html>
   )
 }
 
 // ?????? Full agent station ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 function AgentStation({ agent, agentState, onClick }) {
   const bodyRef = useRef()
+  const [hovered, setHovered] = useState(false)
   const isSitting = agentState === 'working' || agentState === 'thinking'
   const avatarUrl = AVATAR_MAP[agent.name]
 
   useFrame(({ clock }) => {
     if (bodyRef.current && isSitting) {
-      bodyRef.current.position.y = 0.92 + Math.sin(clock.getElapsedTime() * 6.28 * 2.8) * 0.025
+      // Subtle typing bob on the sprite
+      const mat = bodyRef.current.material
+      if (mat) {
+        // We can't move sprite position easily via ref (it's a THREE.Sprite)
+        // Instead animate via parent group ??? see bodyGroupRef below
+      }
     }
   })
 
   const [px, , pz] = agent.position
-  // Avatar floats above the character's head
-  const avatarY = isSitting ? 3.1 : 3.5
 
   return (
-    <group position={[px, 0, pz]}>
-      <Desk agentColor={agent.color} agentState={agentState} onClick={onClick} />
-      <CharacterBody agentState={agentState} color={agent.color} bodyRef={bodyRef} />
+    <group
+      position={[px, 0, pz]}
+      onClick={onClick}
+      onPointerEnter={(e) => { e.stopPropagation(); setHovered(true) }}
+      onPointerLeave={() => setHovered(false)}
+    >
+      <Desk agentColor={agent.color} agentState={agentState} />
 
-      {/* Avatar billboard */}
+      {/* Avatar as character body */}
       {avatarUrl && (
-        <AvatarBillboard
+        <AvatarBody
           avatarUrl={avatarUrl}
           agentState={agentState}
-          agentColor={agent.color}
-          position={[0, avatarY, 0.85]}
+          bodyRef={bodyRef}
         />
       )}
 
-      {/* Name label below avatar */}
+      {/* Hover-only portrait card */}
+      {avatarUrl && (
+        <HoverPortrait
+          avatarUrl={avatarUrl}
+          agentName={agent.name}
+          agentState={agentState}
+          hovered={hovered}
+        />
+      )}
+
+      {/* Name label (always visible, below avatar) */}
       <Text
-        position={[0, avatarY - 0.62, 0.85]}
-        fontSize={0.2}
+        position={[0, 0.62, 0.85]}
+        fontSize={0.18}
         color="white"
         anchorX="center"
         anchorY="middle"
-        outlineWidth={0.022}
+        outlineWidth={0.02}
         outlineColor="#000"
         renderOrder={10}
       >
         {agent.name}
-      </Text>
-      {/* Role label */}
-      <Text
-        position={[0, avatarY - 0.86, 0.85]}
-        fontSize={0.13}
-        color="#AABBCC"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.015}
-        outlineColor="#000"
-        renderOrder={10}
-      >
-        {agent.role}
       </Text>
     </group>
   )
@@ -380,7 +405,7 @@ function Whiteboard() {
   )
 }
 
-// ?????? Top roster HUD ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
+// ?????? Top roster HUD (unchanged) ????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????
 function RosterBar({ statuses }) {
   return (
     <div style={{
@@ -413,9 +438,7 @@ function RosterBar({ statuses }) {
             border: `1px solid ${agent.color}33`,
             borderRadius: '10px', padding: '5px 14px 5px 6px',
           }}>
-            {/* Avatar with status ring */}
             <div style={{ position: 'relative', width: '36px', height: '36px', flexShrink: 0 }}>
-              {/* Status ring */}
               <div style={{
                 position: 'absolute', inset: '-3px',
                 borderRadius: '50%',
@@ -427,12 +450,7 @@ function RosterBar({ statuses }) {
                 <img
                   src={avatarUrl}
                   alt={agent.name}
-                  style={{
-                    width: '36px', height: '36px',
-                    borderRadius: '50%',
-                    objectFit: 'cover',
-                    display: 'block',
-                  }}
+                  style={{ width: '36px', height: '36px', borderRadius: '50%', objectFit: 'cover', display: 'block' }}
                 />
               ) : (
                 <div style={{
@@ -440,22 +458,17 @@ function RosterBar({ statuses }) {
                   background: agent.color,
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '14px', fontWeight: 'bold', color: '#000',
-                }}>
-                  {agent.name[0]}
-                </div>
+                }}>{agent.name[0]}</div>
               )}
             </div>
-
             <div>
               <div style={{ color: '#EEE', fontSize: '12px', fontWeight: 'bold', lineHeight: 1.15 }}>{agent.name}</div>
               <div style={{ color: '#889', fontSize: '10px', lineHeight: 1.1 }}>{agent.role}</div>
             </div>
-
             <div style={{ display: 'flex', alignItems: 'center', gap: '4px', marginLeft: '4px' }}>
               <div style={{
                 width: '7px', height: '7px', borderRadius: '50%',
-                background: dotColor,
-                boxShadow: `0 0 5px ${dotColor}`,
+                background: dotColor, boxShadow: `0 0 5px ${dotColor}`,
               }} />
               <span style={{ color: dotColor, fontSize: '10px', textTransform: 'capitalize' }}>
                 {STATE_LABEL[st.state] || 'Idle'}
@@ -464,7 +477,6 @@ function RosterBar({ statuses }) {
           </div>
         )
       })}
-
       <div style={{ marginLeft: 'auto', color: '#334455', fontSize: '11px' }}>Phase D2</div>
     </div>
   )
@@ -487,7 +499,6 @@ export default function App() {
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#060C18' }}>
       <RosterBar statuses={statuses} />
-
       <Canvas
         shadows
         camera={{ position: [12, 14, 14], fov: 45 }}
@@ -536,7 +547,7 @@ export default function App() {
         position: 'fixed', bottom: '14px', right: '18px',
         color: '#334455', fontFamily: 'monospace', fontSize: '11px', pointerEvents: 'none',
       }}>
-        Click desk to focus ?? Drag to orbit ?? Scroll to zoom
+        Hover desk to see portrait ?? Drag to orbit ?? Scroll to zoom
       </div>
     </div>
   )

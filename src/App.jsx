@@ -660,7 +660,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.22} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.14} color="#444" anchorX="center">D2.5 ✓ Ship Complete</Text><Text position={[0,-0.32,0.06]} fontSize={0.11} color="#777" anchorX="center">CREW-011 ✓  D2.6 → Activity Feed</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.22} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.14} color="#444" anchorX="center">D2.5 ✓ Ship Complete</Text><Text position={[0,-0.32,0.06]} fontSize={0.11} color="#777" anchorX="center">D2.5 ✓ Ship / D2.6 Activity Feed</Text></group>)
 }
 
 // ══ Task Flow Particles — data packets flying between working agents ══════════════════
@@ -871,6 +871,55 @@ function useLiveClock() {
   return time
 }
 
+function useActivityFeed(statuses) {
+  const prevRef = React.useRef({})
+  const [events, setEvents] = React.useState([])
+  React.useEffect(() => {
+    if (!statuses || statuses.length === 0) return
+    const newEvents = []
+    statuses.forEach(s => {
+      const prev = prevRef.current[s.name]
+      if (prev !== undefined && prev !== s.state) {
+        const d = new Date()
+        const ts = d.toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
+        const agentInfo = CREW.find(c => c.name === s.name)
+        newEvents.push({ id: Date.now() + Math.random(), ts, agentName: s.name, agentColor: agentInfo?.color || '#888', fromState: prev, toState: s.state })
+      }
+      prevRef.current[s.name] = s.state
+    })
+    if (newEvents.length > 0) {
+      setEvents(prev => [...newEvents, ...prev].slice(0, 50))
+    }
+  }, [statuses])
+  return events.slice(0, 12)
+}
+
+function ActivityFeed({ statuses }) {
+  const events = useActivityFeed(statuses)
+  return (
+    <div style={{ position:'fixed',right:0,top:'60px',width:'220px',height:'320px',background:'rgba(8,18,32,0.92)',backdropFilter:'blur(8px)',borderLeft:'1px solid rgba(100,160,255,0.15)',zIndex:190,fontFamily:"'Courier New',monospace",display:'flex',flexDirection:'column',overflow:'hidden' }}>
+      <div style={{ padding:'8px 12px 6px',borderBottom:'1px solid rgba(100,160,255,0.12)',color:'#88AACC',fontSize:'10px',letterSpacing:'1.2px',textTransform:'uppercase',display:'flex',alignItems:'center',gap:'6px' }}>
+        <span style={{ fontSize:'13px' }}>📡</span> Activity Log
+      </div>
+      <div style={{ flex:1,overflowY:'hidden',padding:'4px 0',display:'flex',flexDirection:'column',gap:'1px' }}>
+        {events.length === 0 ? (
+          <div style={{ color:'#334455',fontSize:'10px',padding:'12px',textAlign:'center',marginTop:'16px' }}>Awaiting crew activity...</div>
+        ) : events.map(ev => (
+          <div key={ev.id} style={{ padding:'3px 10px',display:'flex',alignItems:'center',gap:'6px',borderBottom:'1px solid rgba(255,255,255,0.03)',animation:'fadeInRow 0.4s ease' }}>
+            <div style={{ width:'6px',height:'6px',borderRadius:'50%',background:ev.agentColor,flexShrink:0,boxShadow:`0 0 4px ${ev.agentColor}` }} />
+            <div style={{ flex:1,minWidth:0 }}>
+              <span style={{ color:'#556677',fontSize:'9px' }}>{ev.ts} </span>
+              <span style={{ color:ev.agentColor,fontSize:'10px',fontWeight:'bold' }}>{ev.agentName}</span>
+              <span style={{ color:'#445566',fontSize:'9px' }}> → </span>
+              <span style={{ color:STATE_COLOR[ev.toState]||'#888',fontSize:'10px' }}>{STATE_LABEL[ev.toState]||ev.toState}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
 function RosterBar({ statuses }) {
   const clock = useLiveClock()
   return (
@@ -908,7 +957,7 @@ function RosterBar({ statuses }) {
       <div style={{ marginLeft:'auto',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
         <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
           <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-          D2.5 · Live
+          D2.6 · Live
         </div>
         <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
       </div>
@@ -931,8 +980,9 @@ export default function App() {
   return (
     <StatusContext.Provider value={statuses}>
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
-      <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } }`}</style>
+      <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }`}</style>
       <RosterBar statuses={statuses} />
+      <ActivityFeed statuses={statuses} />
       <Canvas
         shadows
         camera={{ position:[12,14,14], fov:45 }}

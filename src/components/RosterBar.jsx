@@ -17,7 +17,7 @@ function useLiveClock() {
   return time
 }
 
-export default function RosterBar({ statuses }) {
+export default function RosterBar({ statuses, onFocusAgent, focusTarget }) {
   const clock = useLiveClock()
   return (
     <div style={{ position:'fixed',top:0,left:0,right:0,height:'60px',background:'linear-gradient(135deg,#0D2137 0%,#1A2F4A 100%)',borderBottom:'1px solid rgba(100,160,255,0.25)',display:'flex',alignItems:'center',padding:'0 20px',gap:'16px',zIndex:200,fontFamily:"'Courier New',monospace",boxShadow:'0 2px 16px rgba(0,0,0,0.6)' }}>
@@ -33,8 +33,9 @@ export default function RosterBar({ statuses }) {
         const st=statuses.find(s=>s.name===agent.name)||{state:'idle'}
         const dotColor=STATE_COLOR[st.state]||'#555'
         const av=AVATAR_MAP[agent.name]
+        const isFocused = focusTarget?.name === agent.name
         return(
-          <div key={agent.name} style={{ display:'flex',alignItems:'center',gap:'10px',background:'rgba(255,255,255,0.04)',border:`1px solid ${agent.color}33`,borderRadius:'10px',padding:'5px 14px 5px 6px' }}>
+          <div key={agent.name} onClick={() => onFocusAgent && onFocusAgent(isFocused ? null : agent)} style={{ display:'flex',alignItems:'center',gap:'10px',background:isFocused?`${agent.color}22`:'rgba(255,255,255,0.04)',border:`1px solid ${isFocused?agent.color:agent.color+'33'}`,borderRadius:'10px',padding:'5px 14px 5px 6px',cursor:'pointer',boxShadow:isFocused?`0 0 12px ${agent.color}55`:'none',transition:'all 0.2s ease' }}>
             <div style={{ position:'relative',width:'36px',height:'36px',flexShrink:0 }}>
               <div style={{ position:'absolute',inset:'-3px',borderRadius:'50%',border:`2.5px solid ${dotColor}`,boxShadow:`0 0 8px ${dotColor}88`,zIndex:1 }} />
               {av?<img src={av} alt={agent.name} style={{ width:'36px',height:'36px',borderRadius:'50%',objectFit:'cover',display:'block' }}/>:
@@ -54,9 +55,10 @@ export default function RosterBar({ statuses }) {
       <div style={{ marginLeft:'auto',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
         <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
           <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-          D2.7 · Live
+          D2.8 · Live
         </div>
         <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
+        <div style={{ color:'#334466',fontSize:'9px',letterSpacing:'0.5px' }}>1-7 focus · R reset</div>
       </div>
     </div>
   )

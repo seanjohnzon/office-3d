@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Stars, Text } from '@react-three/drei'
 import * as THREE from 'three'
@@ -10,6 +10,7 @@ import CommitFeed from './components/CommitFeed'
 import RosterBar from './components/RosterBar'
 import ActivityFeed from './components/ActivityFeed'
 import AgentDetailPanel from './components/AgentDetailPanel'
+import CameraFocus from './components/CameraFocus'
 import DeskGroup from './components/DeskGroup'
 import TaskFlowParticles from './components/TaskFlowParticles'
 import AmbientHologram from './components/AmbientHologram'
@@ -72,7 +73,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.12} color="#444" anchorX="center">D2.6 ✓ Activity Feed</Text><Text position={[0,-0.32,0.06]} fontSize={0.10} color="#777" anchorX="center">D2.7 → Commit Feed</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.12} color="#444" anchorX="center">D2.7 ✓ Commit Feed</Text><Text position={[0,-0.32,0.06]} fontSize={0.10} color="#777" anchorX="center">D2.8 → Camera Focus</Text></group>)
 }
 
 // ══ Main App ═════════════════════════════════════════════════════════════════
@@ -80,6 +81,22 @@ export default function App() {
   const statuses = useGatewayStatus()
   const orbitRef = useRef()
   const [selectedAgent, setSelectedAgent] = useState(null)
+  const [focusTarget, setFocusTarget] = useState(null)
+
+  useEffect(() => {
+    function onKey(e) {
+      if (e.key === 'r' || e.key === 'R' || e.key === 'Escape') {
+        setFocusTarget(null)
+        return
+      }
+      const idx = parseInt(e.key, 10)
+      if (!isNaN(idx) && idx >= 1 && idx <= CREW.length) {
+        setFocusTarget(CREW[idx - 1])
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [])
 
   function getState(name) {
     return statuses.find(s => s.name === name)?.state || 'idle'
@@ -91,7 +108,7 @@ export default function App() {
     <StatusContext.Provider value={statuses}>
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }`}</style>
-      <RosterBar statuses={statuses} />
+      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} />
       <ActivityFeed statuses={statuses} />
       <CommitFeed />
       <Canvas
@@ -133,6 +150,7 @@ export default function App() {
 
         <OrbitControls ref={orbitRef} target={[0,1,0]} enableDamping dampingFactor={0.06}
           minDistance={6} maxDistance={32} maxPolarAngle={Math.PI/2.1} />
+        <CameraFocus target={focusTarget} orbitRef={orbitRef} />
       </Canvas>
 
       {selectedAgent && (

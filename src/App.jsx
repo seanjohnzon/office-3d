@@ -4,6 +4,7 @@ import { OrbitControls, Text, RoundedBox, Stars, Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { CREW } from './data/crewConfig'
 import useGatewayStatus from './data/useGatewayStatus'
+import CommitFeed from './components/CommitFeed'
 
 // ?????? Portrait avatars (anime) ??? HUD bar + hover cards only ??????????????????????????????????????????????????????
 import namiAvatar    from './assets/avatars/nami.png'
@@ -660,7 +661,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.22} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.14} color="#444" anchorX="center">D2.5 ✓ Ship Complete</Text><Text position={[0,-0.32,0.06]} fontSize={0.11} color="#777" anchorX="center">D2.5 ✓ Ship / D2.6 Activity Feed</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.02,0.06]} fontSize={0.12} color="#444" anchorX="center">D2.6 ✓ Activity Feed</Text><Text position={[0,-0.32,0.06]} fontSize={0.10} color="#777" anchorX="center">D2.7 → Commit Feed</Text></group>)
 }
 
 // ══ Task Flow Particles — data packets flying between working agents ══════════════════
@@ -957,7 +958,7 @@ function RosterBar({ statuses }) {
       <div style={{ marginLeft:'auto',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
         <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
           <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-          D2.6 · Live
+          D2.7 · Live
         </div>
         <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
       </div>
@@ -983,6 +984,7 @@ export default function App() {
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } }`}</style>
       <RosterBar statuses={statuses} />
       <ActivityFeed statuses={statuses} />
+      <CommitFeed />
       <Canvas
         shadows
         camera={{ position:[12,14,14], fov:45 }}

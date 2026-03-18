@@ -18,7 +18,7 @@ function useLiveClock() {
   return time
 }
 
-export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoActive }) {
+export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoActive, ambientEnabled, setAmbientEnabled, hasInteracted }) {
   const clock = useLiveClock()
   const { isMobile } = useIsMobile()
   return (
@@ -61,13 +61,23 @@ export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoAct
           </div>
         )
       })}
-      {!isMobile && <div style={{ marginLeft:'auto',display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px',flexShrink:0 }}>
-        <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
-          <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-          D2.12 · Live
+      {!isMobile && <div style={{ marginLeft:'auto',display:'flex',alignItems:'center',gap:'10px',flexShrink:0 }}>
+        <button
+          onClick={() => setAmbientEnabled && setAmbientEnabled(!ambientEnabled)}
+          title={!hasInteracted ? 'Click anywhere first to enable audio' : ambientEnabled ? 'Ambient drone ON — click to disable' : 'Click to enable ambient drone'}
+          style={{ background:'rgba(255,255,255,0.06)',border:'1px solid rgba(100,160,255,0.2)',borderRadius:'6px',padding:'3px 8px',cursor:'pointer',fontFamily:"'Courier New',monospace",fontSize:'13px',color:'#88AACC',display:'flex',alignItems:'center',gap:'5px',transition:'all 0.2s ease',opacity: !hasInteracted ? 0.5 : 1 }}
+        >
+          {ambientEnabled ? '🔊' : '🔇'}
+          {!hasInteracted && <span style={{ fontSize:'9px',color:'#557799' }}>(click to enable)</span>}
+        </button>
+        <div style={{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
+          <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
+            <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
+            D2.16 · Live
+          </div>
+          <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
+          <div style={{ color:'#334466',fontSize:'9px',letterSpacing:'0.5px' }}>1-7 · R · H help</div>
         </div>
-        <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
-        <div style={{ color:'#334466',fontSize:'9px',letterSpacing:'0.5px' }}>1-7 · R · H help</div>
       </div>}
     </div>
   )

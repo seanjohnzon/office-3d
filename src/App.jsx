@@ -8,6 +8,7 @@ import { StatusContext } from './data/StatusContext'
 
 import useIsMobile from './hooks/useIsMobile'
 import useDemoMode from './hooks/useDemoMode'
+import useAgentSounds from './hooks/useAgentSounds'
 import CommitFeed from './components/CommitFeed'
 import RosterBar from './components/RosterBar'
 import ActivityFeed from './components/ActivityFeed'
@@ -80,7 +81,7 @@ function Plant({position}) {
 }
 
 function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.13 ✓ SprintHUD  D2.14 ✓ Network  D2.15 ✓ Demo</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.16 → Agent Sound / Ambient FX</Text></group>)
+  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.14 ✓ Network  D2.15 ✓ Demo  D2.16 ✓ Sound</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.17 → Crew Chat Ticker</Text></group>)
 }
 
 // ══ Main App ═════════════════════════════════════════════════════════════════
@@ -92,6 +93,24 @@ export default function App() {
   const [selectedAgent, setSelectedAgent] = useState(null)
   const [focusTarget, setFocusTarget] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
+  const { playStateChange, setAmbientEnabled, ambientEnabled, hasInteracted } = useAgentSounds()
+  const prevStatusesRef = useRef(null)
+
+  useEffect(() => {
+    if (prevStatusesRef.current === null) {
+      // First mount — just store, don't play sounds
+      prevStatusesRef.current = statuses
+      return
+    }
+    const prev = prevStatusesRef.current
+    statuses.forEach(s => {
+      const prevEntry = prev.find(p => p.name === s.name)
+      if (prevEntry && prevEntry.state !== s.state) {
+        playStateChange(s.name, s.state, prevEntry.state)
+      }
+    })
+    prevStatusesRef.current = statuses
+  }, [statuses, playStateChange])
 
   useEffect(() => {
     function onKey(e) {
@@ -126,7 +145,7 @@ export default function App() {
     <StatusContext.Provider value={statuses}>
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } } @keyframes helpFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }`}</style>
-      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} />
+      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} ambientEnabled={ambientEnabled} setAmbientEnabled={setAmbientEnabled} hasInteracted={hasInteracted} />
       <SprintHUD />
       <ActivityFeed statuses={statuses} />
       <CommitFeed />

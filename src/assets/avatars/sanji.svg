@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200">
+<defs>
+  <radialGradient id="sanjiBg" cx="50%" cy="40%" r="60%">
+    <stop offset="0%" stop-color="#1A1830"/>
+    <stop offset="100%" stop-color="#0A0A18"/>
+  </radialGradient>
+  <radialGradient id="sanjiSkin" cx="50%" cy="40%" r="55%">
+    <stop offset="0%" stop-color="#FFDCBB"/>
+    <stop offset="100%" stop-color="#E8B88A"/>
+  </radialGradient>
+  <radialGradient id="sanjiHair" cx="40%" cy="30%" r="70%">
+    <stop offset="0%" stop-color="#F5D050"/>
+    <stop offset="100%" stop-color="#C8A020"/>
+  </radialGradient>
+</defs>
+<!-- Background circle -->
+<circle cx="50" cy="50" r="50" fill="url(#sanjiBg)"/>
+<!-- Neck -->
+<rect x="43" y="69" width="14" height="13" fill="url(#sanjiSkin)" rx="2"/>
+<!-- Suit jacket body -->
+<ellipse cx="50" cy="92" rx="35" ry="24" fill="#1A1828"/>
+<!-- White shirt V collar -->
+<polygon points="43,71 50,86 57,71 53,73 50,83 47,73" fill="#F0EDE8"/>
+<!-- Dark necktie -->
+<rect x="48" y="75" width="4" height="15" fill="#141432" rx="1"/>
+<!-- Face oval -->
+<ellipse cx="50" cy="51" rx="21" ry="23" fill="url(#sanjiSkin)"/>
+<!-- Hair base — swept golden blonde -->
+<ellipse cx="50" cy="37" rx="23" ry="15" fill="url(#sanjiHair)"/>
+<!-- Hair sweep over right side (covering right eye) -->
+<ellipse cx="61" cy="44" rx="13" ry="17" fill="url(#sanjiHair)"/>
+<ellipse cx="63" cy="53" rx="9" ry="11" fill="url(#sanjiHair)"/>
+<!-- Hair shine highlight -->
+<ellipse cx="40" cy="33" rx="7" ry="4" fill="#FFE87A" opacity="0.45"/>
+<!-- LEFT eye only visible (right covered by hair) -->
+<ellipse cx="40" cy="51" rx="5" ry="5.5" fill="#0A0A18"/>
+<ellipse cx="40" cy="51" rx="3.5" ry="4" fill="#2A4080"/>
+<ellipse cx="38.5" cy="49.5" rx="1.2" ry="1.2" fill="white"/>
+<!-- Left eyebrow -->
+<path d="M34,45 Q38,41 44,44" stroke="#B89010" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<!-- Curly end of eyebrow -->
+<path d="M44,44 Q46,43 45,46" stroke="#B89010" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<!-- Nose -->
+<ellipse cx="47" cy="57" rx="2" ry="1.5" fill="#C8906A"/>
+<!-- Slight smirk -->
+<path d="M43,63 Q50,67 57,63" stroke="#9A6A4A" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<!-- Cigarette -->
+<rect x="51" y="62" width="19" height="3" fill="#F5F5DC" rx="1.5"/>
+<rect x="51" y="62" width="4" height="3" fill="#E8A080" rx="1"/>
+<circle cx="70" cy="63.5" r="2.2" fill="#FF4400"/>
+<circle cx="70" cy="63.5" r="1" fill="#FFBB00"/>
+<!-- Smoke -->
+<path d="M70,61 Q72,57 69,53 Q71,49 69,45" stroke="#CCCCCC" stroke-width="1.2" fill="none" opacity="0.35" stroke-linecap="round"/>
+</svg>

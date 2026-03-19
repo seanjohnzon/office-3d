@@ -121,7 +121,7 @@ function sunnyDaytimeState() {
     moonVisible: false,
     ambientColor: '#FFF5E0',  // warm white sunlight
     ambientIntensity: 1.2,    // bright!
-    dirLightIntensity: 2.0,   // strong directional sun
+    dirLightIntensity: 2.2,   // strong directional sun
     starsOpacity: 0.0,
     sunColor: '#FFFFFF',
   }

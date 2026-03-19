@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="200" height="200">
+<defs>
+  <radialGradient id="usoppBg" cx="50%" cy="40%" r="60%">
+    <stop offset="0%" stop-color="#2A1F10"/>
+    <stop offset="100%" stop-color="#150E05"/>
+  </radialGradient>
+  <radialGradient id="usoppSkin" cx="50%" cy="45%" r="55%">
+    <stop offset="0%" stop-color="#E8C890"/>
+    <stop offset="100%" stop-color="#C89A60"/>
+  </radialGradient>
+  <radialGradient id="usoppHair" cx="50%" cy="30%" r="70%">
+    <stop offset="0%" stop-color="#2E2218"/>
+    <stop offset="100%" stop-color="#0A0805"/>
+  </radialGradient>
+</defs>
+<!-- Background -->
+<circle cx="50" cy="50" r="50" fill="url(#usoppBg)"/>
+<!-- Shoulders / overalls -->
+<ellipse cx="50" cy="93" rx="36" ry="23" fill="#7A5025"/>
+<!-- Khaki shirt center -->
+<ellipse cx="50" cy="93" rx="22" ry="19" fill="#A8803C"/>
+<!-- Suspender straps -->
+<rect x="39" y="72" width="7" height="20" fill="#6A4018" rx="2"/>
+<rect x="54" y="72" width="7" height="20" fill="#6A4018" rx="2"/>
+<!-- Neck -->
+<rect x="43" y="69" width="14" height="12" fill="url(#usoppSkin)" rx="2"/>
+<!-- Face -->
+<ellipse cx="50" cy="56" rx="20" ry="21" fill="url(#usoppSkin)"/>
+<!-- Big curly hair base -->
+<ellipse cx="50" cy="38" rx="27" ry="21" fill="url(#usoppHair)"/>
+<!-- Individual curly bumps for afro texture -->
+<circle cx="28" cy="40" r="9" fill="#201810"/>
+<circle cx="36" cy="28" r="10" fill="#201810"/>
+<circle cx="50" cy="24" r="11" fill="#201810"/>
+<circle cx="64" cy="28" r="10" fill="#201810"/>
+<circle cx="72" cy="40" r="9" fill="#201810"/>
+<circle cx="26" cy="50" r="7" fill="#201810"/>
+<circle cx="74" cy="50" r="7" fill="#201810"/>
+<!-- Hair highlight -->
+<ellipse cx="42" cy="29" rx="7" ry="5" fill="#3A2A18" opacity="0.5"/>
+<!-- Bandana on forehead -->
+<rect x="29" y="44" width="42" height="8" fill="#A08840" rx="3"/>
+<!-- Bandana highlight stripe -->
+<rect x="29" y="45" width="42" height="2" fill="#C0A850" rx="1" opacity="0.6"/>
+<!-- Goggles frame above bandana -->
+<rect x="31" y="36" width="38" height="10" fill="#7A5020" rx="4"/>
+<!-- Goggle left lens -->
+<ellipse cx="41" cy="41" rx="7.5" ry="4.5" fill="#8ACCE8" opacity="0.85"/>
+<ellipse cx="41" cy="41" rx="7.5" ry="4.5" fill="none" stroke="#5A3818" stroke-width="1.8"/>
+<ellipse cx="39" cy="40" rx="2" ry="1.5" fill="white" opacity="0.4"/>
+<!-- Goggle right lens -->
+<ellipse cx="59" cy="41" rx="7.5" ry="4.5" fill="#8ACCE8" opacity="0.85"/>
+<ellipse cx="59" cy="41" rx="7.5" ry="4.5" fill="none" stroke="#5A3818" stroke-width="1.8"/>
+<ellipse cx="57" cy="40" rx="2" ry="1.5" fill="white" opacity="0.4"/>
+<!-- Bridge between goggles -->
+<rect x="48" y="39" width="4" height="4" fill="#5A3818" rx="1"/>
+<!-- Left eye -->
+<ellipse cx="42" cy="57" rx="5" ry="5.5" fill="white"/>
+<ellipse cx="42" cy="57" rx="3.5" ry="4" fill="#3A2808"/>
+<ellipse cx="42" cy="57" rx="2" ry="2.5" fill="#1A0A00"/>
+<ellipse cx="41" cy="55.5" rx="1" ry="1" fill="white"/>
+<!-- Right eye -->
+<ellipse cx="58" cy="57" rx="5" ry="5.5" fill="white"/>
+<ellipse cx="58" cy="57" rx="3.5" ry="4" fill="#3A2808"/>
+<ellipse cx="58" cy="57" rx="2" ry="2.5" fill="#1A0A00"/>
+<ellipse cx="57" cy="55.5" rx="1" ry="1" fill="white"/>
+<!-- Eyebrows worried/determined -->
+<path d="M36,51 Q42,48 47,51" stroke="#1A1008" stroke-width="2" fill="none" stroke-linecap="round"/>
+<path d="M53,51 Q58,48 64,51" stroke="#1A1008" stroke-width="2" fill="none" stroke-linecap="round"/>
+<!-- LONG NOSE — signature Usopp feature -->
+<ellipse cx="50" cy="65" rx="3.5" ry="3" fill="#C89060"/>
+<path d="M46.5,65 Q47,78 47,84 Q50,87 53,84 Q53,78 53.5,65" fill="url(#usoppSkin)"/>
+<ellipse cx="50" cy="84" rx="4.5" ry="3.5" fill="#B87A50"/>
+<!-- Wide grin mouth -->
+<path d="M39,73 Q50,80 61,73" stroke="#7A4A28" stroke-width="2" fill="none" stroke-linecap="round"/>
+<!-- Teeth -->
+<rect x="43" y="73" width="14" height="5" fill="white" rx="2"/>
+</svg>

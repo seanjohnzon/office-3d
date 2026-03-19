@@ -623,9 +623,9 @@ export default function App() {
           shadow-camera-left={-20} shadow-camera-right={20}
           shadow-camera-top={20} shadow-camera-bottom={-20}
         />
-        <directionalLight position={[-6, 8, -4]} intensity={0.8} color="#FFE8D0" />
+        <directionalLight position={[-6, 8, -4]} intensity={0.8} color="#AACCFF" />
         <directionalLight position={[0, 4, 12]} intensity={0.6} color="#FFD700" /> {/* warm fill from bow */}
-        <pointLight position={[0, 5, 0]} intensity={1.0} color="#FFE8C0" distance={30} />
+        <pointLight position={[0, 5, 0]} intensity={1.2} color="#FFE8C0" distance={30} />
         <pointLight position={[0, 8, 6]} intensity={0.6} color="#FFD080" distance={20} /> {/* figurehead glow */}
 
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />

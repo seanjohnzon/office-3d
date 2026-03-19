@@ -10,6 +10,7 @@ import useIsMobile from './hooks/useIsMobile'
 import useDemoMode from './hooks/useDemoMode'
 import useAgentSounds from './hooks/useAgentSounds'
 import useStateDuration from './hooks/useStateDuration'
+import useWhiteboardData from './hooks/useWhiteboardData'
 import CommitFeed from './components/CommitFeed'
 import RosterBar from './components/RosterBar'
 import ActivityFeed from './components/ActivityFeed'
@@ -83,14 +84,24 @@ function Plant({position}) {
   return(<group position={position}><mesh position={[0,0.2,0]} castShadow><cylinderGeometry args={[0.18,0.22,0.4,10]}/><meshStandardMaterial color="#C1440E" roughness={0.9}/></mesh><mesh position={[0,0.52,0]} castShadow><sphereGeometry args={[0.32,8,6]}/><meshStandardMaterial color="#2D7A2D" roughness={0.8}/></mesh><mesh position={[0.18,0.64,0.08]} castShadow><sphereGeometry args={[0.18,7,6]}/><meshStandardMaterial color="#3A9A3A" roughness={0.8}/></mesh></group>)
 }
 
-function Whiteboard() {
-  return(<group position={[0,1.6,-5.88]}><mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh><mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh><Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">SPRINT 2 · LIVE</Text><Text position={[0,0.08,0.06]} fontSize={0.11} color="#444" anchorX="center">D2.17-D2.20 ✓  D2.21 ✓ Desk Reactive Lighting</Text><Text position={[0,-0.22,0.06]} fontSize={0.10} color="#2ecc71" anchorX="center">D2.22 → Selected Desk Glow Ring</Text></group>)
+function Whiteboard({ data }) {
+  const d = data || { header: "SPRINT 2 · LIVE", line1: "D2.22 ✓ Glow Ring", line2: "D2.23 → Dynamic Board", statusColor: "#2ecc71" }
+  return (
+    <group position={[0,1.6,-5.88]}>
+      <mesh castShadow><boxGeometry args={[2.8,1.6,0.07]}/><meshStandardMaterial color="#5C3D1E" roughness={0.7}/></mesh>
+      <mesh position={[0,0,0.04]}><boxGeometry args={[2.6,1.44,0.02]}/><meshStandardMaterial color="#F5F2EC" roughness={0.9}/></mesh>
+      <Text position={[0,0.38,0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">{d.header}</Text>
+      <Text position={[0,0.08,0.06]} fontSize={0.105} color="#444" anchorX="center">{d.line1}</Text>
+      <Text position={[0,-0.22,0.06]} fontSize={0.095} color={d.statusColor} anchorX="center">{d.line2}</Text>
+    </group>
+  )
 }
 
 // ══ Main App ═════════════════════════════════════════════════════════════════
 export default function App() {
   const rawStatuses = useGatewayStatus()
   const { statuses, demoActive } = useDemoMode(rawStatuses)
+  const whiteboardData = useWhiteboardData()
   const orbitRef = useRef()
   const { isMobile } = useIsMobile()
   const [selectedAgent, setSelectedAgent] = useState(null)
@@ -174,7 +185,7 @@ export default function App() {
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />
         <CosmicBackdrop />
         <OfficeShell />
-        <Whiteboard />
+        <Whiteboard data={whiteboardData} />
         <Bookshelf />
         <Plant position={[-6.3,0,4.5]} />
         <Plant position={[6.3,0,4.5]} />

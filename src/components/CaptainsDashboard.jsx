@@ -29,6 +29,12 @@ function useSprintData(visible) {
   const timerRef = useRef(null)
 
   async function fetchSprint() {
+    // Skip LAN fetches from HTTPS origin (mixed-content block)
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:'
+    if (isHttps) {
+      setSprint(null)
+      return
+    }
     try {
       const res = await fetch(TASKS_URL, { signal: AbortSignal.timeout(6000) })
       if (!res.ok) throw new Error('non-ok')

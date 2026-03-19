@@ -30,6 +30,7 @@ import KitchenStation from './components/KitchenStation'
 import WorkshopStation from './components/WorkshopStation'
 import AnimatedMast from './components/AnimatedMast'
 import CaptainsDashboard from './components/CaptainsDashboard'
+import OceanPlane from './OceanPlane'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -396,6 +397,7 @@ export default function App() {
 
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />
         <CosmicBackdrop />
+        <OceanPlane />
 
         {/* Ship Structure */}
         <WoodenDeck />

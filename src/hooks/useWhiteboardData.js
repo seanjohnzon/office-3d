@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 
 const FALLBACK = {
-  header: "THOUSAND SUNNY · D2.25",
-  line1: "D2.24 ✓ Sails / D2.25 ✓ Bridge",
-  line2: "D2.26 → Ocean Waves",
+  header: "THOUSAND SUNNY \u2693 D2.26",
+  line1: "D2.25 \u2713 Bridge / D2.26 \u2713 Ocean",
+  line2: "D2.26 \u2713 Ocean",
   statusColor: "#2ecc71"
 }
 
@@ -22,11 +22,11 @@ export default function useWhiteboardData() {
         const queued = tasks.filter(t => t.status === 'queued' || t.status === 'open').length
         const blocked = tasks.filter(t => t.status === 'blocked').length
 
-        const line1 = `✓ ${done} done  ⏳ ${inProgress} active`
-        const line2 = `⬜ ${queued} queued  🔴 ${blocked} blocked`
+        const line1 = `\u2705 ${done} done  \u26a1 ${inProgress} active`
+        const line2 = `\ud83d\udce6 ${queued} queued  \ud83d\uded1 ${blocked} blocked`
         const statusColor = blocked > 0 ? '#e74c3c' : queued > 0 ? '#f39c12' : '#2ecc71'
 
-        setData({ header: "SPRINT 2 · LIVE", line1, line2, statusColor })
+        setData({ header: "SPRINT 2 \u2693 LIVE", line1, line2, statusColor })
       } catch {
         setData(FALLBACK)
       }

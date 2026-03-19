@@ -2,7 +2,7 @@ import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
 
-export default function StarField() {
+export default function StarField({ opacity = 0.9 }) {
   const meshRef = useRef()
   
   const [positions, colors] = useMemo(() => {
@@ -42,7 +42,7 @@ export default function StarField() {
         size={0.25}
         vertexColors
         transparent
-        opacity={0.9}
+        opacity={opacity}
         sizeAttenuation
       />
     </points>

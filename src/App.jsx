@@ -446,7 +446,7 @@ function Cannon({ position, rotateY = 0 }) {
 }
 
 function CaptainsLog({ data }) {
-  const d = data || { header: "CAPTAIN'S LOG · LIVE", line1: "D2.28 ✓ Ship Bob + Fog", line2: "D2.28 → Scene Live", statusColor: "#2ecc71" }
+  const d = data || { header: "CAPTAIN'S LOG · LIVE", line1: "D2.29 ✓ Dynamic Sky Cycle", line2: "D2.29 → Day/Night Live", statusColor: "#2ecc71" }
   return (
     <group position={[0, 2.6, -7.6]}>
       <mesh castShadow>

@@ -30,7 +30,7 @@ export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoAct
         {!isMobile && <div>
           <div style={{ color:'#FFD700',fontWeight:'bold',fontSize:'13px',lineHeight:1.1 }}>STRAW HAT HQ</div>
           <div style={{ color:'#557799',fontSize:'10px',display:'flex',alignItems:'center',gap:'5px' }}>
-            Mission Control · Live
+            D2.28 · Live
             {demoActive && <>
               <span style={{ display:'inline-block',width:'6px',height:'6px',borderRadius:'50%',background:'#BB88FF',boxShadow:'0 0 5px #BB88FF',animation:'pulseDot 1.4s ease-in-out infinite' }} />
               <span style={{ color:'#BB88FF',fontSize:'9px',fontWeight:'bold',letterSpacing:'0.5px' }}>DEMO</span>

@@ -33,6 +33,7 @@ import CaptainsDashboard from './components/CaptainsDashboard'
 import OceanPlane from './OceanPlane'
 import StarField from './components/StarField'
 import WakeFoam from './components/WakeFoam'
+import ShipBob from './components/ShipBob'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -443,7 +444,7 @@ function Cannon({ position, rotateY = 0 }) {
 }
 
 function CaptainsLog({ data }) {
-  const d = data || { header: "CAPTAIN'S LOG · LIVE", line1: "D2.22 ✓ Glow Ring", line2: "D2.23 → Dynamic Board", statusColor: "#2ecc71" }
+  const d = data || { header: "CAPTAIN'S LOG · LIVE", line1: "D2.28 ✓ Ship Bob + Fog", line2: "D2.28 → Scene Live", statusColor: "#2ecc71" }
   return (
     <group position={[0, 2.6, -7.6]}>
       <mesh castShadow>
@@ -604,6 +605,7 @@ export default function App() {
         style={{ width:'100%',height:'100%',paddingTop:isMobile?'44px':'60px',paddingBottom:'32px',boxSizing:'border-box' }}
         gl={{ antialias:true }}
         touch-action="none"
+        onCreated={({ scene }) => { scene.fog = new THREE.FogExp2('#0a1520', 0.018) }}
       >
         <ambientLight intensity={0.45} color="#C8D8F0" />
         <directionalLight position={[8, 16, 10]} intensity={1.4} color="#FFF5E0" castShadow
@@ -617,54 +619,59 @@ export default function App() {
 
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />
         <CosmicBackdrop />
+
+        {/* World-fixed elements — NOT bobbed */}
         <OceanPlane />
         <SceneErrorBoundary><StarField /></SceneErrorBoundary>
         <SceneErrorBoundary><WakeFoam /></SceneErrorBoundary>
 
-        {/* Ship Structure */}
-        <WoodenDeck />
-        <ThousandSunnyHull />
-        <LionFigurehead />
+        {/* Ship content — all bobs with the ocean */}
+        <ShipBob>
+          {/* Ship Structure */}
+          <WoodenDeck />
+          <ThousandSunnyHull />
+          <LionFigurehead />
 
-        {/* Masts */}
-        <AnimatedMast position={[-3, 0, -4]} />
-        <AnimatedMast position={[3, 0, -4]} />
+          {/* Masts */}
+          <AnimatedMast position={[-3, 0, -4]} />
+          <AnimatedMast position={[3, 0, -4]} />
 
-        {/* Captain's Log (was Whiteboard) */}
-        <CaptainsLog data={whiteboardData} />
+          {/* Captain's Log (was Whiteboard) */}
+          <CaptainsLog data={whiteboardData} />
 
-        {/* Grass lawn area */}
-        <GrassLawn />
+          {/* Grass lawn area */}
+          <GrassLawn />
 
-        {/* Helm at stern */}
-        <NavigationWheel position={[0, 1.85, -7]} />
+          {/* Helm at stern */}
+          <NavigationWheel position={[0, 1.85, -7]} />
 
-        {/* Cannons */}
-        <Cannon position={[-9, 0.3, -2]} rotateY={Math.PI / 2} />
-        <Cannon position={[-9, 0.3, 1]} rotateY={Math.PI / 2} />
-        <Cannon position={[9, 0.3, -2]} rotateY={-Math.PI / 2} />
-        <Cannon position={[9, 0.3, 1]} rotateY={-Math.PI / 2} />
+          {/* Cannons */}
+          <Cannon position={[-9, 0.3, -2]} rotateY={Math.PI / 2} />
+          <Cannon position={[-9, 0.3, 1]} rotateY={Math.PI / 2} />
+          <Cannon position={[9, 0.3, -2]} rotateY={-Math.PI / 2} />
+          <Cannon position={[9, 0.3, 1]} rotateY={-Math.PI / 2} />
 
-        {/* Strategy Room (center back) */}
-        <StrategyRoom />
+          {/* Strategy Room (center back) */}
+          <StrategyRoom />
 
-        {/* Signature crew stations */}
-        <KitchenStation position={[3, 0, 4.5]} />
-        <WorkshopStation position={[-4, 0, 4.5]} />
+          {/* Signature crew stations */}
+          <KitchenStation position={[3, 0, 4.5]} />
+          <WorkshopStation position={[-4, 0, 4.5]} />
 
-        {CREW.map(agent => (
-          <DeskGroup
-            key={agent.name}
-            agent={agent}
-            agentState={getState(agent.name)}
-            onClick={() => setSelectedAgent(agent)}
-            isSelected={selectedAgent?.name === agent.name}
-          />
-        ))}
+          {CREW.map(agent => (
+            <DeskGroup
+              key={agent.name}
+              agent={agent}
+              agentState={getState(agent.name)}
+              onClick={() => setSelectedAgent(agent)}
+              isSelected={selectedAgent?.name === agent.name}
+            />
+          ))}
 
-        <TaskFlowParticles />
-        <NetworkLines />
-        <AmbientHologram confTablePos={[0, 0.5, -2]} />
+          <TaskFlowParticles />
+          <NetworkLines />
+          <AmbientHologram confTablePos={[0, 0.5, -2]} />
+        </ShipBob>
 
         <SceneEffects />
 

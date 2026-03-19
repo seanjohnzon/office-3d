@@ -17,13 +17,13 @@ function PostFXInner() {
   return (
     <EffectComposer>
       <Bloom
-        intensity={1.2}
-        luminanceThreshold={0.3}
+        intensity={0.6}
+        luminanceThreshold={0.5}
         luminanceSmoothing={0.9}
-        radius={0.8}
+        radius={0.4}
         mipmapBlur
       />
-      <Vignette eskil={false} offset={0.3} darkness={0.6} blendFunction={BlendFunction.NORMAL} />
+      <Vignette eskil={false} offset={0.4} darkness={0.3} blendFunction={BlendFunction.NORMAL} />
     </EffectComposer>
   )
 }

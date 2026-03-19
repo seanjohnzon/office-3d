@@ -8,6 +8,12 @@ async function fetchOne(agent) {
   if (!agent.ip) {
     return { name: agent.name, state: 'standby', model: null, outputTokens: 0 };
   }
+  // Skip LAN fetches from HTTPS origin (mixed-content block)
+  const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+  const isLanIp = /^(10\.|192\.168\.|172\.(1[6-9]|2[0-9]|3[01])\.)/.test(agent.ip);
+  if (isHttps && isLanIp) {
+    return { name: agent.name, state: 'offline', model: null, outputTokens: 0 };
+  }
   const base = `http://${agent.ip}:${agent.port}`;
   const headers = { Authorization: `Bearer ${agent.token}` };
   try {

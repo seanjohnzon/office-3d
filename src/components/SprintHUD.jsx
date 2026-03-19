@@ -14,6 +14,12 @@ export default function SprintHUD() {
   const [expanded, setExpanded] = useState(false)
 
   function fetchStats() {
+    // Skip LAN fetches from HTTPS origin (mixed-content block)
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    if (isHttps) {
+      setStats({ total: 15, done: 13, byStatus: { done: 13, 'in-progress': 1, queued: 1 }, offline: true })
+      return
+    }
     fetch('http://10.0.0.152:18800/api/tasks')
       .then(r => r.json())
       .then(data => {

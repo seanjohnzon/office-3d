@@ -64,7 +64,7 @@ export default function NetworkLines() {
   // Build a name→state lookup
   const stateMap = useMemo(() => {
     const m = {}
-    statuses.forEach(s => { m[s.name] = s.state })
+    ;(statuses || []).forEach(s => { m[s.name] = s.state })
     return m
   }, [statuses])
 

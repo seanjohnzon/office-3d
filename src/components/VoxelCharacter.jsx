@@ -104,31 +104,57 @@ export const CHAR_CFG = {
   },
   Sanji: {
     scale: 1.02,
-    skinColor: '#F4C28C', hairColor: '#C8A800',   // blonde
-    topColor: '#111111',  pantsColor: '#1A1A2A', shoeColor: '#050505',
+    skinColor: '#FFDCAA',   // warm peach (Brook's spec)
+    hairColor: '#E6C335',   // golden blonde (Brook's spec)
+    topColor: '#1E1C26',    // near-black suit
+    pantsColor: '#191722',  // matching dark
+    shoeColor: '#141219',   // black dress shoes
     extras: [
-      // Cigarette in mouth area
-      { type: 'box', size: [0.14, 0.03, 0.03], pos: [0.10, 1.04, 0.13], color: '#F5F5DC' },
-      { type: 'box', size: [0.03, 0.03, 0.03], pos: [0.22, 1.04, 0.13], color: '#FF4400' },
-      // Suit lapel detail
-      { type: 'box', size: [0.08, 0.18, 0.04], pos: [-0.06, 0.68, 0.11], color: '#222230' },
-      { type: 'box', size: [0.08, 0.18, 0.04], pos: [0.06, 0.68, 0.11], color: '#222230' },
+      // White shirt collar triangle
+      { type: 'box', size: [0.12, 0.10, 0.04], pos: [0, 0.82, 0.11], color: '#F0EDEB' },
+      // Dark tie running down center
+      { type: 'box', size: [0.05, 0.28, 0.04], pos: [0, 0.66, 0.11], color: '#141432' },
+      // Cigarette (right side of mouth)
+      { type: 'box', size: [0.16, 0.03, 0.03], pos: [0.12, 1.03, 0.14], color: '#F5F5DC' },
+      // Cigarette ember tip
+      { type: 'box', size: [0.03, 0.03, 0.03], pos: [0.26, 1.03, 0.14], color: '#FF4400' },
+      // Curly eyebrow above RIGHT eye (gold)
+      { type: 'box', size: [0.08, 0.04, 0.03], pos: [0.07, 1.08, 0.13], color: '#D4AF20', rot: [0, 0, 0.4] },
     ],
-    hairShape: 'sideSwept',
+    hairShape: 'sideSweptBrook',  // updated hair shape key
   },
   Usopp: {
     scale: 0.98,
-    skinColor: '#8B6914', hairColor: '#1A0A00',   // dark brown
-    topColor: '#8B4513',  pantsColor: '#556B2F', shoeColor: '#2A1A00',
+    skinColor: '#E6C8A0',   // light tan (Brook's spec)
+    hairColor: '#1E1914',   // dark black (Brook's spec)
+    topColor: '#B48C3C',    // khaki shirt
+    pantsColor: '#8C5F23',  // brown overalls
+    shoeColor: '#503719',   // medium brown boots
     extras: [
-      // Long nose — signature sniperking
-      { type: 'box', size: [0.06, 0.06, 0.36], pos: [0, 1.02, 0.22], color: '#8B6914' },
-      // Goggles on head
-      { type: 'box', size: [0.28, 0.10, 0.08], pos: [0, 1.12, 0.09], color: '#2A4A2A' },
-      { type: 'box', size: [0.10, 0.06, 0.04], pos: [-0.12, 1.12, 0.12], color: '#4A8A4A' },
-      { type: 'box', size: [0.10, 0.06, 0.04], pos: [0.12, 1.12, 0.12], color: '#4A8A4A' },
+      // Suspender straps (overalls indicator) — left strap
+      { type: 'box', size: [0.05, 0.30, 0.04], pos: [-0.08, 0.72, 0.11], color: '#784B19' },
+      // Suspender strap right
+      { type: 'box', size: [0.05, 0.30, 0.04], pos: [0.08, 0.72, 0.11], color: '#784B19' },
+      // Long nose (key identity marker — Z-axis protrusion)
+      { type: 'box', size: [0.07, 0.07, 0.40], pos: [0, 1.02, 0.26], color: '#E6C8A0' },
+      // Bandana/headband across forehead
+      { type: 'box', size: [0.30, 0.07, 0.06], pos: [0, 1.10, 0.11], color: '#A08C50' },
+      // Goggle frame (copper-brown, on forehead above bandana)
+      { type: 'box', size: [0.26, 0.08, 0.06], pos: [0, 1.17, 0.10], color: '#6B4A1E' },
+      // Goggle left lens (blue-tint)
+      { type: 'box', size: [0.09, 0.06, 0.04], pos: [-0.08, 1.17, 0.13], color: '#B4DCF0' },
+      // Goggle right lens
+      { type: 'box', size: [0.09, 0.06, 0.04], pos: [0.08, 1.17, 0.13], color: '#B4DCF0' },
+      // Slingshot (Y-shape) — wood handle
+      { type: 'box', size: [0.05, 0.28, 0.05], pos: [0.32, 0.68, 0], color: '#8B5E3C' },
+      // Slingshot fork left
+      { type: 'box', size: [0.05, 0.16, 0.05], pos: [0.26, 0.88, 0], color: '#8B5E3C', rot: [0, 0, -0.5] },
+      // Slingshot fork right
+      { type: 'box', size: [0.05, 0.16, 0.05], pos: [0.38, 0.88, 0], color: '#8B5E3C', rot: [0, 0, 0.5] },
+      // Slingshot rubber band (red)
+      { type: 'box', size: [0.14, 0.03, 0.03], pos: [0.32, 0.96, 0], color: '#CC2200' },
     ],
-    hairShape: 'curlyAfro',
+    hairShape: 'curlyAfroBig',  // updated hair shape key
   },
 }
 
@@ -390,6 +416,47 @@ export default function VoxelCharacter({ name, isSitting, walkPhase, bobY }) {
           </mesh>
           <mesh position={[-0.18, headY + 0.08, 0]} castShadow>
             <boxGeometry args={[0.08, 0.20, 0.26]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+        </>
+      )}
+      {cfg.hairShape === 'sideSweptBrook' && (
+        <>
+          {/* Base hair top */}
+          <mesh position={[0, headY + 0.14, -0.02]} castShadow>
+            <boxGeometry args={[0.28, 0.12, 0.22]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+          {/* Side-swept bang — wider, covers left eye completely */}
+          <mesh position={[-0.10, headY + 0.04, 0.08]} castShadow>
+            <boxGeometry args={[0.18, 0.24, 0.16]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+        </>
+      )}
+      {cfg.hairShape === 'curlyAfroBig' && (
+        <>
+          {/* Main afro mass — wider and taller */}
+          <mesh position={[0, headY + 0.16, 0]} castShadow>
+            <boxGeometry args={[0.40, 0.26, 0.38]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          {/* Bumpy top */}
+          <mesh position={[-0.10, headY + 0.28, 0.04]} castShadow>
+            <boxGeometry args={[0.14, 0.12, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          <mesh position={[0.10, headY + 0.30, -0.04]} castShadow>
+            <boxGeometry args={[0.14, 0.14, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          {/* Curly side tufts coming down to mid-face */}
+          <mesh position={[0.22, headY + 0.04, 0]} castShadow>
+            <boxGeometry args={[0.10, 0.22, 0.28]} />
+            <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
+          </mesh>
+          <mesh position={[-0.22, headY + 0.04, 0]} castShadow>
+            <boxGeometry args={[0.10, 0.22, 0.28]} />
             <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
           </mesh>
         </>

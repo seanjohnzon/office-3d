@@ -605,7 +605,13 @@ export default function App() {
         style={{ width:'100%',height:'100%',paddingTop:isMobile?'44px':'60px',paddingBottom:'32px',boxSizing:'border-box' }}
         gl={{ antialias:true }}
         touch-action="none"
-        onCreated={({ scene }) => { scene.fog = new THREE.FogExp2('#0a1520', 0.018) }}
+        onCreated={({ gl, scene }) => {
+          scene.fog = new THREE.FogExp2('#0a1520', 0.018)
+          gl.domElement.addEventListener('webglcontextlost', (e) => {
+            e.preventDefault()
+            console.warn('WebGL context lost — will attempt restore')
+          })
+        }}
       >
         <ambientLight intensity={0.45} color="#C8D8F0" />
         <directionalLight position={[8, 16, 10]} intensity={1.4} color="#FFF5E0" castShadow

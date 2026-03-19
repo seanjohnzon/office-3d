@@ -33,6 +33,12 @@ export default function TaskFeed() {
   const [error, setError] = useState(null)
 
   function fetchTasks() {
+    // Skip LAN fetches from HTTPS origin (mixed-content block)
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
+    if (isHttps) {
+      setError('offline')
+      return
+    }
     fetch('http://10.0.0.152:18800/api/tasks')
       .then(r => r.json())
       .then(data => {

@@ -7,8 +7,8 @@
     role: 'Navigator',
     color: '#FF8C00',
     accentColor: '#FFB347',
-    position: [-6, 0, -6.5],
-    deskPosition: [-6, 0, -6.5],
+    position: [5, 0, -1],
+    deskPosition: [5, 0, -1],
   },
   {
     name: 'Franky',
@@ -18,8 +18,8 @@
     role: 'Shipwright',
     color: '#1E90FF',
     accentColor: '#63B3ED',
-    position: [-6, 0, 2],
-    deskPosition: [-6, 0, 2],
+    position: [5, 0, 3],
+    deskPosition: [5, 0, 3],
   },
   {
     name: 'Chopper',
@@ -29,8 +29,8 @@
     role: 'Doctor / QA',
     color: '#E84393',
     accentColor: '#F687B3',
-    position: [6, 0, -5],
-    deskPosition: [6, 0, -5],
+    position: [-5, 0, -1],
+    deskPosition: [-5, 0, -1],
   },
   {
     name: 'Robin',

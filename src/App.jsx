@@ -18,6 +18,7 @@ import AgentDetailPanel from './components/AgentDetailPanel'
 import HelpOverlay from './components/HelpOverlay'
 import CameraFocus from './components/CameraFocus'
 import DeskGroup from './components/DeskGroup'
+import VoxelCharacter from './components/VoxelCharacter'
 import TaskFlowParticles from './components/TaskFlowParticles'
 import NetworkLines from './components/NetworkLines'
 import AmbientHologram from './components/AmbientHologram'
@@ -1383,6 +1384,135 @@ class SceneErrorBoundary extends Component {
   render() { return this.state.hasError ? null : this.props.children }
 }
 
+// ══ Luffy — Captain at the Figurehead ════════════════════════════════════════
+function LuffyAtFigurehead() {
+  // Luffy sits on top of the lion head, legs dangling forward, looking out ahead
+  // Figurehead is at [0, 2.0, 20] — top of lion head is ~y+1.0 above that = y=3.0 world
+  return (
+    <group position={[0, 3.8, 20.2]} rotation={[0, Math.PI, 0]}>
+      {/* Sitting pose: torso upright, legs hanging forward */}
+      {/* Torso */}
+      <mesh position={[0, 0.62, 0]} castShadow>
+        <boxGeometry args={[0.32, 0.44, 0.18]} />
+        <meshStandardMaterial color="#CC2200" roughness={0.7} /> {/* red vest */}
+      </mesh>
+      {/* Head */}
+      <mesh position={[0, 0.96, 0]} castShadow>
+        <boxGeometry args={[0.26, 0.26, 0.24]} />
+        <meshStandardMaterial color="#F4C28C" roughness={0.6} />
+      </mesh>
+      {/* Black hair — messy tufts */}
+      <mesh position={[0, 1.07, -0.02]} castShadow>
+        <boxGeometry args={[0.26, 0.10, 0.22]} />
+        <meshStandardMaterial color="#1A1A1A" />
+      </mesh>
+      <mesh position={[-0.13, 1.03, 0.04]} castShadow>
+        <boxGeometry args={[0.07, 0.09, 0.12]} />
+        <meshStandardMaterial color="#1A1A1A" />
+      </mesh>
+      <mesh position={[0.13, 1.03, 0.04]} castShadow>
+        <boxGeometry args={[0.07, 0.09, 0.12]} />
+        <meshStandardMaterial color="#1A1A1A" />
+      </mesh>
+      {/* Straw hat brim */}
+      <mesh position={[0, 1.12, 0]} castShadow>
+        <boxGeometry args={[0.62, 0.05, 0.58]} />
+        <meshStandardMaterial color="#D4A020" roughness={0.7} />
+      </mesh>
+      {/* Straw hat crown */}
+      <mesh position={[0, 1.22, 0]} castShadow>
+        <boxGeometry args={[0.32, 0.18, 0.30]} />
+        <meshStandardMaterial color="#D4B830" roughness={0.75} />
+      </mesh>
+      {/* Red hat band */}
+      <mesh position={[0, 1.14, 0]}>
+        <boxGeometry args={[0.34, 0.04, 0.32]} />
+        <meshStandardMaterial color="#CC0000" roughness={0.6} />
+      </mesh>
+      {/* Scar under left eye */}
+      <mesh position={[-0.07, 0.93, 0.13]}>
+        <boxGeometry args={[0.06, 0.03, 0.01]} />
+        <meshStandardMaterial color="#8B2222" />
+      </mesh>
+      {/* Big grin */}
+      <mesh position={[0, 0.89, 0.13]}>
+        <boxGeometry args={[0.14, 0.035, 0.01]} />
+        <meshStandardMaterial color="#1A0A00" />
+      </mesh>
+      {/* Arms — spread out wide, carefree */}
+      <mesh position={[0.24, 0.62, 0]} rotation={[0, 0, 0.5]} castShadow>
+        <boxGeometry args={[0.11, 0.36, 0.12]} />
+        <meshStandardMaterial color="#F4C28C" />
+      </mesh>
+      <mesh position={[-0.24, 0.62, 0]} rotation={[0, 0, -0.5]} castShadow>
+        <boxGeometry args={[0.11, 0.36, 0.12]} />
+        <meshStandardMaterial color="#F4C28C" />
+      </mesh>
+      {/* Sitting legs — thighs forward, lower legs dangling down */}
+      {/* Right thigh (horizontal forward) */}
+      <mesh position={[0.09, 0.36, 0.22]} rotation={[Math.PI/2, 0, 0]} castShadow>
+        <boxGeometry args={[0.12, 0.38, 0.13]} />
+        <meshStandardMaterial color="#2255BB" />
+      </mesh>
+      {/* Right lower leg (dangling down) */}
+      <mesh position={[0.09, 0.16, 0.40]} castShadow>
+        <boxGeometry args={[0.11, 0.38, 0.12]} />
+        <meshStandardMaterial color="#2255BB" />
+      </mesh>
+      {/* Left thigh */}
+      <mesh position={[-0.09, 0.36, 0.22]} rotation={[Math.PI/2, 0, 0]} castShadow>
+        <boxGeometry args={[0.12, 0.38, 0.13]} />
+        <meshStandardMaterial color="#2255BB" />
+      </mesh>
+      {/* Left lower leg */}
+      <mesh position={[-0.09, 0.16, 0.40]} castShadow>
+        <boxGeometry args={[0.11, 0.38, 0.12]} />
+        <meshStandardMaterial color="#2255BB" />
+      </mesh>
+      {/* Sandals */}
+      <mesh position={[0.09, 0.01, 0.42]} castShadow>
+        <boxGeometry args={[0.13, 0.06, 0.18]} />
+        <meshStandardMaterial color="#3A1A00" />
+      </mesh>
+      <mesh position={[-0.09, 0.01, 0.42]} castShadow>
+        <boxGeometry args={[0.13, 0.06, 0.18]} />
+        <meshStandardMaterial color="#3A1A00" />
+      </mesh>
+      {/* Name label */}
+      <Text
+        position={[0, 1.55, 0]}
+        fontSize={0.22}
+        color="#FFD700"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.025}
+        outlineColor="#000"
+        renderOrder={10}
+      >
+        ⚓ LUFFY
+      </Text>
+      {/* Captain label */}
+      <Text
+        position={[0, 1.30, 0]}
+        fontSize={0.14}
+        color="#FF4444"
+        anchorX="center"
+        anchorY="middle"
+        outlineWidth={0.015}
+        outlineColor="#000"
+        renderOrder={10}
+      >
+        Captain
+      </Text>
+      {/* Floor glow — red */}
+      <mesh rotation={[-Math.PI/2, 0, 0]} position={[0, -0.55, 0.1]} receiveShadow>
+        <ringGeometry args={[0.30, 0.50, 32]} />
+        <meshBasicMaterial color="#FF2200" transparent opacity={0.5} side={THREE.DoubleSide} />
+      </mesh>
+    </group>
+  )
+}
+
 // ══ Main App ═════════════════════════════════════════════════════════════════
 export default function App() {
   const rawStatuses = useGatewayStatus()
@@ -1502,6 +1632,7 @@ export default function App() {
           <ShipDeck />
           <ShipHullShaped />
           <LionFigurehead />
+          <LuffyAtFigurehead />
 
           {/* Masts */}
           <AnimatedMast position={[-8, 0, -12]} />
@@ -1544,7 +1675,7 @@ export default function App() {
           {/* Men's Quarters — bunks, lockers, wanted posters */}
           <MensQuarters />
 
-          {CREW.map(agent => (
+          {CREW.filter(agent => agent.name !== 'Luffy').map(agent => (
             <DeskGroup
               key={agent.name}
               agent={agent}

@@ -26,6 +26,8 @@ import SprintHUD from './components/SprintHUD'
 import GatewayBanner from './components/GatewayBanner'
 import CrewTicker from './components/CrewTicker'
 import SceneEffects from './components/SceneEffects'
+import KitchenStation from './components/KitchenStation'
+import WorkshopStation from './components/WorkshopStation'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -403,6 +405,10 @@ export default function App() {
         {/* Cannons */}
         <Cannon position={[-9, 0.3, 0]} rotateY={0} />
         <Cannon position={[9, 0.3, 0]} rotateY={Math.PI} />
+
+        {/* Signature crew stations */}
+        <KitchenStation position={[0, 0, 6.5]} />
+        <WorkshopStation position={[-3, 0, 6.5]} />
 
         {CREW.map(agent => (
           <DeskGroup

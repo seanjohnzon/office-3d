@@ -43,12 +43,14 @@ export default function TaskFeed() {
       .then(r => r.json())
       .then(data => {
         const arr = Array.isArray(data) ? data : (data.tasks || [])
+        // Sort: in-progress first, then queued, then blocked/open
+        const statusOrder = { 'in-progress': 0, 'queued': 1, 'blocked': 2, 'open': 3 }
         const filtered = arr
           .filter(t =>
             ACTIVE_STATUSES.has(t.status) &&
-            t.assignee_id &&
-            !t.assignee_id.startsWith('QA-TEST-')
+            (t.assigned || t.assignee_id)
           )
+          .sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9))
           .slice(0, 8)
         setTasks(filtered)
         setError(null)
@@ -147,7 +149,7 @@ export default function TaskFeed() {
               padding: '1px 3px',
               letterSpacing: '0.5px',
             }}>
-              {getInitials(task.assignee_id)}
+              {getInitials(task.assigned || task.assignee_id)}
             </span>
           </div>
         )

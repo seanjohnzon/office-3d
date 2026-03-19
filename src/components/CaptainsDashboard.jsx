@@ -33,7 +33,7 @@ function useSprintData(visible) {
       const res = await fetch(TASKS_URL, { signal: AbortSignal.timeout(6000) })
       if (!res.ok) throw new Error('non-ok')
       const tasks = await res.json()
-      const done = tasks.filter(t => t.status === 'done' || t.status === 'completed').length
+      const done = tasks.filter(t => t.status === 'completed' || t.status === 'done' || t.status === 'complete').length
       const inProgress = tasks.filter(t => t.status === 'in-progress').length
       const queued = tasks.filter(t => t.status === 'queued' || t.status === 'open').length
       const blocked = tasks.filter(t => t.status === 'blocked').length

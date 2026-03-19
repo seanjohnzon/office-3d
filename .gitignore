@@ -35,3 +35,11 @@ pnpm-debug.log*
 
 # Vite
 *.local
+
+# Dev/utility scripts (not part of app)
+generate-avatars.js
+fetch-avatars.cjs
+find-sanji.cjs
+get-sanji.cjs
+build_output.txt
+push_out.txt

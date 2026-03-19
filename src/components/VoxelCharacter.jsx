@@ -7,8 +7,8 @@ import frankyAvatar  from '../assets/avatars/franky.png'
 import chopperAvatar from '../assets/avatars/chopper.png'
 import robinAvatar   from '../assets/avatars/robin.png'
 import brookAvatar   from '../assets/avatars/brook.png'
-import sanjiAvatar   from '../assets/avatars/sanji.svg'
-import usoppAvatar   from '../assets/avatars/usopp.svg'
+import sanjiAvatar   from '../assets/avatars/sanji.png'
+import usoppAvatar   from '../assets/avatars/usopp.png'
 
 export const AVATAR_MAP = {
   Nami: namiAvatar,

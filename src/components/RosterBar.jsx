@@ -19,7 +19,7 @@ function useLiveClock() {
   return time
 }
 
-export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoActive, ambientEnabled, setAmbientEnabled, hasInteracted }) {
+export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoActive, ambientEnabled, setAmbientEnabled, hasInteracted, showDashboard, setShowDashboard }) {
   const clock = useLiveClock()
   const { isMobile } = useIsMobile()
   const durations = useStateDuration(statuses)
@@ -76,13 +76,20 @@ export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoAct
           {ambientEnabled ? '🔊' : '🔇'}
           {!hasInteracted && <span style={{ fontSize:'9px',color:'#557799' }}>(click to enable)</span>}
         </button>
+        <button
+          onClick={() => setShowDashboard && setShowDashboard(!showDashboard)}
+          title="Captain's Bridge (C)"
+          style={{ background: showDashboard ? 'rgba(212,160,32,0.2)' : 'rgba(255,255,255,0.06)', border:`1px solid ${showDashboard ? '#D4A020' : 'rgba(212,160,32,0.35)'}`, borderRadius:'6px', padding:'3px 10px', cursor:'pointer', fontFamily:"'Courier New',monospace", fontSize:'12px', color:'#D4A020', display:'flex', alignItems:'center', gap:'5px', transition:'all 0.2s ease', fontWeight:'bold', boxShadow: showDashboard ? '0 0 10px rgba(212,160,32,0.4)' : 'none' }}
+        >
+          ⚓ BRIDGE
+        </button>
         <div style={{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
           <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
             <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-            D2.24 · Live
+            D2.25 · Live
           </div>
           <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
-          <div style={{ color:'#334466',fontSize:'9px',letterSpacing:'0.5px' }}>1-7 · R · H help</div>
+          <div style={{ color:'#334466',fontSize:'9px',letterSpacing:'0.5px' }}>1-7 · R · C · H help</div>
         </div>
       </div>}
     </div>

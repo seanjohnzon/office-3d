@@ -29,6 +29,7 @@ import SceneEffects from './components/SceneEffects'
 import KitchenStation from './components/KitchenStation'
 import WorkshopStation from './components/WorkshopStation'
 import AnimatedMast from './components/AnimatedMast'
+import CaptainsDashboard from './components/CaptainsDashboard'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -307,6 +308,7 @@ export default function App() {
   const [selectedAgent, setSelectedAgent] = useState(null)
   const [focusTarget, setFocusTarget] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
+  const [showDashboard, setShowDashboard] = useState(false)
   const { playStateChange, setAmbientEnabled, ambientEnabled, hasInteracted } = useAgentSounds()
   const durations = useStateDuration(statuses)
   const prevStatusesRef = useRef(null)
@@ -337,6 +339,16 @@ export default function App() {
         setShowHelp(false)
         return
       }
+      if (e.key === 'Escape' && showDashboard) {
+        setShowDashboard(false)
+        return
+      }
+      if (e.key === 'c' || e.key === 'C') {
+        if (!showHelp) {
+          setShowDashboard(prev => !prev)
+          return
+        }
+      }
       if (e.key === 'r' || e.key === 'R' || e.key === 'Escape') {
         setFocusTarget(null)
         return
@@ -348,7 +360,7 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [showHelp])
+  }, [showHelp, showDashboard])
 
   function getState(name) {
     return statuses.find(s => s.name === name)?.state || 'idle'
@@ -360,7 +372,7 @@ export default function App() {
     <StatusContext.Provider value={statuses}>
     <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } } @keyframes helpFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }`}</style>
-      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} ambientEnabled={ambientEnabled} setAmbientEnabled={setAmbientEnabled} hasInteracted={hasInteracted} />
+      <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} ambientEnabled={ambientEnabled} setAmbientEnabled={setAmbientEnabled} hasInteracted={hasInteracted} showDashboard={showDashboard} setShowDashboard={setShowDashboard} />
       <SprintHUD />
       <ActivityFeed statuses={statuses} />
       <CommitFeed />
@@ -444,6 +456,7 @@ export default function App() {
       )}
 
       <HelpOverlay visible={showHelp} onClose={() => setShowHelp(false)} />
+      <CaptainsDashboard visible={showDashboard} onClose={() => setShowDashboard(false)} statuses={statuses} demoActive={demoActive} />
       <GatewayBanner statuses={statuses} demoActive={demoActive} />
       <CrewTicker statuses={statuses} />
 

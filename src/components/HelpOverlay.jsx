@@ -5,6 +5,7 @@ const SHORTCUTS = [
   { key: '1 – 7', desc: 'Focus on crew member desk' },
   { key: 'R / Esc', desc: 'Reset camera view' },
   { key: 'H / ?', desc: 'Toggle this help screen' },
+  { key: 'C', desc: "Captain's Bridge — crew command HUD" },
   { key: 'Drag', desc: 'Orbit camera' },
   { key: 'Scroll', desc: 'Zoom in / out' },
   { key: 'Click card', desc: 'Focus that desk (top bar)' },

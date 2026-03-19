@@ -74,10 +74,12 @@ const WALK_SPEED = 0.55
 const WAIT_MIN   = 1.2
 const WAIT_RANGE = 1.4
 
-export default function DeskGroup({ agent, agentState, onClick }) {
+export default function DeskGroup({ agent, agentState, onClick, isSelected }) {
   const [hovered, setHovered] = useState(false)
   const charGroupRef = useRef()
   const ringMatRef = useRef()
+  const glowRingRef = useRef()
+  const glowRingPhaseRef = useRef(0)
   const avatarUrl = AVATAR_MAP[agent.name]
   const ringPhase = useRef(Math.random() * Math.PI * 2)
   const chipGroupRef = useRef()
@@ -174,6 +176,17 @@ export default function DeskGroup({ agent, agentState, onClick }) {
       chipGroupRef.current.position.y = 1.98 + 0.04 * Math.sin(chipPhaseRef.current)
     }
 
+    // Selected desk glow ring pulse (~1Hz sine, emissiveIntensity 0.4–2.0)
+    if (glowRingRef.current) {
+      if (isSelected) {
+        glowRingPhaseRef.current += dt * Math.PI * 2 * 1.0
+        const intensity = 0.4 + 1.6 * (0.5 + 0.5 * Math.sin(glowRingPhaseRef.current))
+        glowRingRef.current.emissiveIntensity = intensity
+      } else {
+        glowRingRef.current.emissiveIntensity = 0
+      }
+    }
+
     // Desk reactive lighting
     if (lightRef.current) {
       if (agentState === 'thinking') {
@@ -212,6 +225,21 @@ export default function DeskGroup({ agent, agentState, onClick }) {
           castShadow={false}
           intensity={0}
         />
+        {/* Selected desk floor glow ring */}
+        {isSelected && (
+          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.012, 0.1]}>
+            <torusGeometry args={[0.82, 0.10, 16, 64]} />
+            <meshStandardMaterial
+              ref={glowRingRef}
+              color={agent.color}
+              emissive={agent.color}
+              emissiveIntensity={1.0}
+              transparent
+              opacity={0.85}
+              depthWrite={false}
+            />
+          </mesh>
+        )}
       </group>
 
       {/* Animated character group */}

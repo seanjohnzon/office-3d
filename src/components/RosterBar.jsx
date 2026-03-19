@@ -86,7 +86,7 @@ export default function RosterBar({ statuses, onFocusAgent, focusTarget, demoAct
         <div style={{ display:'flex',flexDirection:'column',alignItems:'flex-end',gap:'2px',color:'#88AACC',fontSize:'11px' }}>
           <div style={{ display:'flex',alignItems:'center',gap:'6px' }}>
             <span style={{ width:'8px',height:'8px',borderRadius:'50%',background:'#44FF88',boxShadow:'0 0 6px #44FF88',display:'inline-block',animation:'pulseDot 1.4s ease-in-out infinite' }} />
-            D2.30 · Live
+            SUNNY-005 · Live
           </div>
           <div style={{ color:'#557799',fontSize:'10px',fontFamily:"'Courier New',monospace",letterSpacing:'0.5px' }}>{clock}</div>
           <div style={{ color:'#334466',fontSize:'9px',letterSpacing:'0.5px' }}>1-7 · R · C · H help</div>

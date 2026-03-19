@@ -1,5 +1,17 @@
 export const CREW = [
   {
+    name: 'Luffy',
+    ip: null,
+    port: null,
+    token: null,
+    role: 'Captain',
+    color: '#FF2200',
+    accentColor: '#FF6644',
+    position: [0, 3.8, 20],   // on top of the lion figurehead
+    deskPosition: [0, 3.8, 20],
+    isCaptain: true,
+  },
+  {
     name: 'Nami',
     ip: '10.0.0.152',
     port: 18789,

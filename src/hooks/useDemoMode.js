@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react'
 import { CREW } from '../data/crewConfig'
 
-// Per-agent demo state cycles — all 7 crew
+// Per-agent demo state cycles — all 8 crew
 const DEMO_CYCLES = {
+  Luffy:   ['idle', 'idle', 'idle', 'idle', 'idle'],   // Captain vibes at the bow
   Nami:    ['idle', 'working', 'idle', 'thinking', 'working'],
   Franky:  ['working', 'working', 'idle', 'working', 'thinking'],
   Chopper: ['idle', 'thinking', 'idle', 'working', 'idle'],

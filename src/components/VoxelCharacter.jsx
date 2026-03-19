@@ -9,8 +9,10 @@ import robinAvatar   from '../assets/avatars/robin.png'
 import brookAvatar   from '../assets/avatars/brook.png'
 import sanjiAvatar   from '../assets/avatars/sanji.png'
 import usoppAvatar   from '../assets/avatars/usopp.png'
+import luffyAvatar   from '../assets/avatars/luffy.png'
 
 export const AVATAR_MAP = {
+  Luffy: luffyAvatar,
   Nami: namiAvatar,
   Franky: frankyAvatar,
   Chopper: chopperAvatar,
@@ -155,6 +157,26 @@ export const CHAR_CFG = {
       { type: 'box', size: [0.14, 0.03, 0.03], pos: [0.32, 0.96, 0], color: '#CC2200' },
     ],
     hairShape: 'curlyAfroBig',  // updated hair shape key
+  },
+  Luffy: {
+    scale: 1.08,
+    skinColor: '#F4C28C', hairColor: '#1A1A1A',   // tan skin, black hair
+    topColor: '#CC2200',  pantsColor: '#2255BB', shoeColor: '#1A1A1A',
+    extras: [
+      // Scar under LEFT eye
+      { type: 'box', size: [0.06, 0.03, 0.02], pos: [-0.07, 0.96, 0.13], color: '#8B2222' },
+      { type: 'box', size: [0.04, 0.03, 0.02], pos: [-0.04, 0.93, 0.13], color: '#8B2222' },
+      // Straw hat brim
+      { type: 'box', size: [0.62, 0.05, 0.58], pos: [0, 1.14, 0], color: '#D4A020' },
+      // Straw hat crown
+      { type: 'box', size: [0.32, 0.18, 0.30], pos: [0, 1.24, 0], color: '#D4B830' },
+      // Hat rim band
+      { type: 'box', size: [0.33, 0.05, 0.31], pos: [0, 1.16, 0], color: '#C49010' },
+      // Red hat string
+      { type: 'box', size: [0.34, 0.04, 0.32], pos: [0, 1.20, 0], color: '#CC0000' },
+    ],
+    hairShape: 'luffyHair',
+    bigGrin: true,
   },
 }
 
@@ -460,6 +482,35 @@ export default function VoxelCharacter({ name, isSitting, walkPhase, bobY }) {
             <meshStandardMaterial color={cfg.hairColor} roughness={0.95} />
           </mesh>
         </>
+      )}
+
+      {/* Luffy's messy black hair */}
+      {cfg.hairShape === 'luffyHair' && (
+        <>
+          {/* Main hair mass — short, messy black */}
+          <mesh position={[0, headY + 0.10, -0.02]} castShadow>
+            <boxGeometry args={[0.26, 0.12, 0.24]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+          {/* Left tuft */}
+          <mesh position={[-0.14, headY + 0.06, 0.04]} castShadow>
+            <boxGeometry args={[0.08, 0.10, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+          {/* Right tuft */}
+          <mesh position={[0.14, headY + 0.06, 0.04]} castShadow>
+            <boxGeometry args={[0.08, 0.10, 0.14]} />
+            <meshStandardMaterial color={cfg.hairColor} />
+          </mesh>
+        </>
+      )}
+
+      {/* Luffy's big grin */}
+      {cfg.bigGrin && (
+        <mesh position={[0, headY - 0.06, 0.13]}>
+          <boxGeometry args={[0.16, 0.04, 0.01]} />
+          <meshStandardMaterial color="#1A0A00" />
+        </mesh>
       )}
 
       {/* Character-specific extras */}

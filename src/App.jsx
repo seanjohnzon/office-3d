@@ -34,6 +34,8 @@ import OceanPlane from './OceanPlane'
 import StarField from './components/StarField'
 import WakeFoam from './components/WakeFoam'
 import ShipBob from './components/ShipBob'
+import useDayNightCycle from './hooks/useDayNightCycle'
+import DynamicSky from './components/DynamicSky'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -525,6 +527,7 @@ export default function App() {
   const rawStatuses = useGatewayStatus()
   const { statuses, demoActive } = useDemoMode(rawStatuses)
   const whiteboardData = useWhiteboardData()
+  const skyState = useDayNightCycle()
   const orbitRef = useRef()
   const { isMobile } = useIsMobile()
   const [selectedAgent, setSelectedAgent] = useState(null)
@@ -613,8 +616,8 @@ export default function App() {
           })
         }}
       >
-        <ambientLight intensity={0.45} color="#C8D8F0" />
-        <directionalLight position={[8, 16, 10]} intensity={1.4} color="#FFF5E0" castShadow
+        <ambientLight intensity={skyState.ambientIntensity} color={skyState.ambientColor} />
+        <directionalLight position={[8, 16, 10]} intensity={skyState.dirLightIntensity} color="#FFF5E0" castShadow
           shadow-mapSize={[2048, 2048]}
           shadow-camera-near={0.5} shadow-camera-far={80}
           shadow-camera-left={-20} shadow-camera-right={20}
@@ -627,8 +630,9 @@ export default function App() {
         <CosmicBackdrop />
 
         {/* World-fixed elements — NOT bobbed */}
+        <DynamicSky skyState={skyState} />
         <OceanPlane />
-        <SceneErrorBoundary><StarField /></SceneErrorBoundary>
+        <SceneErrorBoundary><StarField opacity={skyState.starsOpacity} /></SceneErrorBoundary>
         <SceneErrorBoundary><WakeFoam /></SceneErrorBoundary>
 
         {/* Ship content — all bobs with the ocean */}
@@ -679,7 +683,7 @@ export default function App() {
           <AmbientHologram confTablePos={[0, 0.5, -2]} />
         </ShipBob>
 
-        <SceneEffects />
+        <SceneErrorBoundary><SceneEffects /></SceneErrorBoundary>
 
         <OrbitControls ref={orbitRef} target={[0, 1, 0]} enableDamping dampingFactor={0.06}
           minDistance={6} maxDistance={40} maxPolarAngle={Math.PI / 2.1}

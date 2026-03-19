@@ -178,6 +178,61 @@ export default function KitchenStation({ position }) {
         GALLEY
       </Text>
 
+      {/* ── Brook spec additions ── */}
+
+      {/* Cutting board */}
+      <mesh position={[0.2, 0.89, 0.15]}>
+        <boxGeometry args={[0.4, 0.02, 0.28]} />
+        <meshStandardMaterial color="#D4B483" />
+      </mesh>
+      {/* Tomato on cutting board */}
+      <mesh position={[0.18, 0.92, 0.10]}>
+        <boxGeometry args={[0.08, 0.08, 0.08]} />
+        <meshStandardMaterial color="#CC2200" />
+      </mesh>
+      {/* Lettuce on cutting board */}
+      <mesh position={[0.26, 0.91, 0.18]}>
+        <boxGeometry args={[0.10, 0.05, 0.08]} />
+        <meshStandardMaterial color="#4CAF50" />
+      </mesh>
+
+      {/* Refrigerator */}
+      <mesh position={[-0.9, 0.7, -0.3]}>
+        <boxGeometry args={[0.5, 1.4, 0.45]} />
+        <meshStandardMaterial color="#E8E8E8" />
+      </mesh>
+      {/* Fridge handle */}
+      <mesh position={[-0.66, 0.8, -0.14]}>
+        <boxGeometry args={[0.04, 0.3, 0.04]} />
+        <meshStandardMaterial color="#888888" />
+      </mesh>
+
+      {/* Wine rack frame */}
+      <mesh position={[0.85, 1.35, -0.35]}>
+        <boxGeometry args={[0.3, 0.6, 0.15]} />
+        <meshStandardMaterial color="#4A2800" />
+      </mesh>
+      {/* Wine bottle 1 */}
+      <mesh position={[0.73, 1.20, -0.35]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.04, 0.04, 0.22, 8]} />
+        <meshStandardMaterial color="#722F37" />
+      </mesh>
+      {/* Wine bottle 2 */}
+      <mesh position={[0.97, 1.20, -0.35]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.04, 0.04, 0.22, 8]} />
+        <meshStandardMaterial color="#4B0082" />
+      </mesh>
+      {/* Wine bottle 3 */}
+      <mesh position={[0.73, 1.44, -0.35]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.04, 0.04, 0.22, 8]} />
+        <meshStandardMaterial color="#8B0000" />
+      </mesh>
+      {/* Wine bottle 4 */}
+      <mesh position={[0.97, 1.44, -0.35]} rotation={[0, 0, Math.PI / 2]}>
+        <cylinderGeometry args={[0.04, 0.04, 0.22, 8]} />
+        <meshStandardMaterial color="#556B2F" />
+      </mesh>
+
     </group>
   )
 }

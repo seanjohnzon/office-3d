@@ -302,6 +302,62 @@ export default function WorkshopStation({ position }) {
         />
       </mesh>
 
+      {/* ── Brook spec additions ── */}
+
+      {/* Pop Green plant pot 1 */}
+      <mesh position={[-0.8, 0.9, 0.3]}>
+        <cylinderGeometry args={[0.1, 0.1, 0.15, 8]} />
+        <meshStandardMaterial color="#8B5E3C" />
+      </mesh>
+      {/* Pop Green plant pot 2 */}
+      <mesh position={[-0.65, 0.9, 0.3]}>
+        <cylinderGeometry args={[0.1, 0.1, 0.15, 8]} />
+        <meshStandardMaterial color="#8B5E3C" />
+      </mesh>
+      {/* Pop Green plant 1 */}
+      <mesh position={[-0.8, 1.02, 0.3]}>
+        <sphereGeometry args={[0.12, 8, 8]} />
+        <meshStandardMaterial color="#32CD32" />
+      </mesh>
+      {/* Pop Green plant 2 */}
+      <mesh position={[-0.65, 1.02, 0.3]}>
+        <sphereGeometry args={[0.12, 8, 8]} />
+        <meshStandardMaterial color="#32CD32" />
+      </mesh>
+
+      {/* Supply crate 1 — bottom */}
+      <mesh position={[-0.85, 0.15, -0.3]}>
+        <boxGeometry args={[0.4, 0.3, 0.35]} />
+        <meshStandardMaterial color="#8B6B3D" />
+      </mesh>
+      {/* Supply crate 2 — middle */}
+      <mesh position={[-0.85, 0.45, -0.3]}>
+        <boxGeometry args={[0.4, 0.3, 0.35]} />
+        <meshStandardMaterial color="#8B6B3D" />
+      </mesh>
+      {/* Supply crate 3 — top */}
+      <mesh position={[-0.85, 0.75, -0.3]}>
+        <boxGeometry args={[0.4, 0.3, 0.35]} />
+        <meshStandardMaterial color="#8B6B3D" />
+      </mesh>
+
+      {/* Magnifying glass lens */}
+      <mesh position={[0.6, 0.93, 0.25]}>
+        <cylinderGeometry args={[0.2, 0.2, 0.04, 16]} />
+        <meshStandardMaterial color="#888888" metalness={0.4} roughness={0.3} transparent opacity={0.6} />
+      </mesh>
+      {/* Magnifying glass handle */}
+      <mesh position={[0.68, 0.82, 0.25]}>
+        <boxGeometry args={[0.04, 0.2, 0.04]} />
+        <meshStandardMaterial color="#555555" />
+      </mesh>
+
+      {/* Telescope */}
+      <mesh position={[-0.3, 1.0, 0.35]} rotation={[-0.3, 0, 0]}>
+        <cylinderGeometry args={[0.05, 0.05, 0.5, 8]} />
+        <meshStandardMaterial color="#888888" metalness={0.5} />
+      </mesh>
+
     </group>
   )
 }

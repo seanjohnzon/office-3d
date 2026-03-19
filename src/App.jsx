@@ -812,6 +812,341 @@ function SickBay() {
   )
 }
 
+function RobinsLibrary() {
+  // Circular library room — stern port side
+  // Bookshelves lining the walls, globe, poneglyph, reading lamp
+  const bookColors = ['#8B0000','#1A3A6E','#2D6A2D','#8B4513','#4B0082','#C8A000','#1A1A6E','#6A2D2D','#2D5A5A','#5A2D5A']
+  return (
+    <group position={[-5, 0, -5]}>
+      {/* Circular floor */}
+      <mesh position={[0, -0.02, 0]} rotation={[-Math.PI/2, 0, 0]} receiveShadow>
+        <circleGeometry args={[2.5, 20]} />
+        <meshStandardMaterial color="#3E2723" roughness={0.6} />
+      </mesh>
+      {/* Bookshelf arcs — 8 shelf units arranged in circle */}
+      {Array.from({length: 8}, (_, i) => {
+        const angle = (i / 8) * Math.PI * 2
+        const r = 2.2
+        const x = Math.sin(angle) * r
+        const z = Math.cos(angle) * r
+        return (
+          <group key={i} position={[x, 0, z]} rotation={[0, -angle, 0]}>
+            {/* Shelf unit */}
+            <mesh position={[0, 1.0, 0]} castShadow>
+              <boxGeometry args={[0.8, 2.0, 0.22]} />
+              <meshStandardMaterial color="#3E2723" roughness={0.7} />
+            </mesh>
+            {/* Books on 3 shelves */}
+            {[0.2, 0.8, 1.4].map((sy, si) =>
+              [0, 1, 2].map((bk) => (
+                <mesh key={`${si}-${bk}`} position={[-0.25 + bk * 0.24, sy, 0.05]} castShadow>
+                  <boxGeometry args={[0.18, 0.44, 0.15]} />
+                  <meshStandardMaterial color={bookColors[(i * 3 + si + bk) % bookColors.length]} roughness={0.8} />
+                </mesh>
+              ))
+            )}
+          </group>
+        )
+      })}
+      {/* Reading desk — center */}
+      <mesh position={[0, 0.44, 0.3]} castShadow>
+        <boxGeometry args={[1.2, 0.08, 0.7]} />
+        <meshStandardMaterial color="#5D4037" roughness={0.5} />
+      </mesh>
+      <mesh position={[0, 0.22, 0.3]} castShadow>
+        <boxGeometry args={[1.1, 0.44, 0.65]} />
+        <meshStandardMaterial color="#4E342E" roughness={0.7} />
+      </mesh>
+      {/* Open book on desk */}
+      <mesh position={[0, 0.5, 0.3]} rotation={[0, 0.1, 0]}>
+        <boxGeometry args={[0.5, 0.02, 0.35]} />
+        <meshStandardMaterial color="#F5F0E0" roughness={0.9} />
+      </mesh>
+      <mesh position={[-0.26, 0.51, 0.3]} rotation={[0, 0.1, -0.1]}>
+        <boxGeometry args={[0.5, 0.02, 0.35]} />
+        <meshStandardMaterial color="#F0EBE0" roughness={0.9} />
+      </mesh>
+      {/* Globe */}
+      <group position={[0.7, 0.55, -0.2]}>
+        <mesh castShadow>
+          <sphereGeometry args={[0.22, 10, 8]} />
+          <meshStandardMaterial color="#2E7DB8" roughness={0.5} metalness={0.1} />
+        </mesh>
+        {/* Continents suggestion */}
+        <mesh position={[0.1, 0.05, 0.18]}>
+          <boxGeometry args={[0.16, 0.08, 0.04]} />
+          <meshStandardMaterial color="#4CAF50" roughness={0.8} />
+        </mesh>
+        {/* Stand */}
+        <mesh position={[0, -0.28, 0]}>
+          <cylinderGeometry args={[0.04, 0.08, 0.12, 8]} />
+          <meshStandardMaterial color="#C8A000" roughness={0.4} metalness={0.6} />
+        </mesh>
+        <mesh position={[0, -0.36, 0]}>
+          <cylinderGeometry args={[0.12, 0.12, 0.04, 10]} />
+          <meshStandardMaterial color="#C8A000" roughness={0.4} metalness={0.6} />
+        </mesh>
+      </group>
+      {/* Poneglyph — dark stone block with gold markings */}
+      <group position={[-0.7, 0, -0.5]}>
+        <mesh position={[0, 0.25, 0]} castShadow>
+          <boxGeometry args={[0.32, 0.5, 0.28]} />
+          <meshStandardMaterial color="#2F2F2F" roughness={0.9} />
+        </mesh>
+        {/* Gold inscription lines */}
+        {[0.08, 0.18, 0.28, 0.38].map((py, i) => (
+          <mesh key={i} position={[0, py, 0.15]}>
+            <boxGeometry args={[0.22, 0.02, 0.01]} />
+            <meshStandardMaterial color="#C8A020" emissive="#C8A020" emissiveIntensity={0.3} />
+          </mesh>
+        ))}
+      </group>
+      {/* Reading lamp */}
+      <group position={[-0.5, 0, 0.6]}>
+        <mesh position={[0, 0.6, 0]} castShadow>
+          <cylinderGeometry args={[0.02, 0.02, 1.2, 6]} />
+          <meshStandardMaterial color="#888" metalness={0.7} roughness={0.3} />
+        </mesh>
+        <mesh position={[0, 1.22, 0]}>
+          <coneGeometry args={[0.18, 0.22, 8]} />
+          <meshStandardMaterial color="#C8A020" roughness={0.5} metalness={0.2} emissive="#FFD700" emissiveIntensity={0.2} />
+        </mesh>
+        <pointLight position={[0, 1.1, 0]} intensity={0.6} color="#FFDD80" distance={3} />
+      </group>
+      {/* Flowers (Robin's) */}
+      {[[0.4, 0, 0.8], [0.6, 0, 0.6], [0.2, 0, 0.9]].map(([fx, fy, fz], i) => (
+        <group key={i} position={[fx, fy, fz]}>
+          <mesh position={[0, 0.14, 0]}><cylinderGeometry args={[0.015, 0.015, 0.26, 5]} /><meshStandardMaterial color="#2E7D32" /></mesh>
+          <mesh position={[0, 0.28, 0]}><sphereGeometry args={[0.055, 6, 5]} /><meshStandardMaterial color={['#FF69B4','#DA70D6','#FF1493'][i]} /></mesh>
+        </group>
+      ))}
+      <Text position={[0, 2.2, -2.1]} fontSize={0.2} color="#C8A020" anchorX="center">LIBRARY</Text>
+    </group>
+  )
+}
+
+function CrowsNestTower() {
+  // Elevated observation tower — positioned above the deck level
+  // Usopp's lookout post with telescope, gym equipment
+  return (
+    <group position={[0, 0, -1]}>
+      {/* Tower column rising from deck */}
+      <mesh position={[0, 3.5, 0]} castShadow>
+        <cylinderGeometry args={[0.35, 0.45, 7.2, 10]} />
+        <meshStandardMaterial color="#5C3010" roughness={0.85} />
+      </mesh>
+      {/* Rope ladder rungs */}
+      {[1, 1.8, 2.6, 3.4, 4.2, 5.0, 5.8].map((ry, i) => (
+        <mesh key={i} position={[0.38, ry, 0]} rotation={[0, 0, Math.PI/2]}>
+          <cylinderGeometry args={[0.015, 0.015, 0.3, 5]} />
+          <meshStandardMaterial color="#8B5E3C" roughness={0.8} />
+        </mesh>
+      ))}
+      {/* Crow's nest basket */}
+      <mesh position={[0, 7.5, 0]} castShadow>
+        <cylinderGeometry args={[1.1, 0.9, 0.8, 12]} />
+        <meshStandardMaterial color="#5C3010" roughness={0.85} />
+      </mesh>
+      {/* Nest floor */}
+      <mesh position={[0, 7.12, 0]}>
+        <cylinderGeometry args={[0.88, 0.88, 0.06, 12]} />
+        <meshStandardMaterial color="#8B5E3C" roughness={0.8} />
+      </mesh>
+      {/* Railing posts */}
+      {Array.from({length: 8}, (_, i) => {
+        const a = (i / 8) * Math.PI * 2
+        return (
+          <mesh key={i} position={[Math.sin(a)*0.95, 8.1, Math.cos(a)*0.95]}>
+            <boxGeometry args={[0.05, 0.7, 0.05]} />
+            <meshStandardMaterial color="#4A2800" roughness={0.9} />
+          </mesh>
+        )
+      })}
+      {/* Railing ring */}
+      <mesh position={[0, 8.45, 0]}>
+        <torusGeometry args={[0.95, 0.04, 6, 16]} />
+        <meshStandardMaterial color="#4A2800" roughness={0.8} />
+      </mesh>
+      {/* Telescope — pointing outward */}
+      <group position={[0.5, 7.5, 0.5]} rotation={[0, -0.5, -0.3]}>
+        <mesh>
+          <cylinderGeometry args={[0.06, 0.09, 0.8, 8]} />
+          <meshStandardMaterial color="#888" roughness={0.3} metalness={0.7} />
+        </mesh>
+        <mesh position={[0, 0.5, 0]}>
+          <cylinderGeometry args={[0.04, 0.06, 0.4, 8]} />
+          <meshStandardMaterial color="#666" roughness={0.3} metalness={0.7} />
+        </mesh>
+      </group>
+      {/* Dumbbells (Zoro's training gear) */}
+      <group position={[-0.4, 7.25, 0.2]}>
+        <mesh rotation={[0, 0, Math.PI/2]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.4, 6]} />
+          <meshStandardMaterial color="#333" metalness={0.8} roughness={0.2} />
+        </mesh>
+        <mesh position={[-0.22, 0, 0]} rotation={[0, 0, Math.PI/2]}>
+          <cylinderGeometry args={[0.09, 0.09, 0.08, 8]} />
+          <meshStandardMaterial color="#222" metalness={0.8} roughness={0.2} />
+        </mesh>
+        <mesh position={[0.22, 0, 0]} rotation={[0, 0, Math.PI/2]}>
+          <cylinderGeometry args={[0.09, 0.09, 0.08, 8]} />
+          <meshStandardMaterial color="#222" metalness={0.8} roughness={0.2} />
+        </mesh>
+      </group>
+      {/* Second dumbbell */}
+      <group position={[-0.2, 7.25, 0.4]}>
+        <mesh rotation={[0, 0.5, Math.PI/2]}>
+          <cylinderGeometry args={[0.04, 0.04, 0.4, 6]} />
+          <meshStandardMaterial color="#333" metalness={0.8} roughness={0.2} />
+        </mesh>
+        <mesh position={[-0.22, 0, 0]} rotation={[0, 0.5, Math.PI/2]}>
+          <cylinderGeometry args={[0.09, 0.09, 0.08, 8]} />
+          <meshStandardMaterial color="#222" metalness={0.8} roughness={0.2} />
+        </mesh>
+        <mesh position={[0.22, 0, 0]} rotation={[0, 0.5, Math.PI/2]}>
+          <cylinderGeometry args={[0.09, 0.09, 0.08, 8]} />
+          <meshStandardMaterial color="#222" metalness={0.8} roughness={0.2} />
+        </mesh>
+      </group>
+      {/* Jolly Roger flag at very top */}
+      <mesh position={[0, 9.5, 0]} castShadow>
+        <boxGeometry args={[0.06, 1.5, 0.06]} />
+        <meshStandardMaterial color="#4A2800" roughness={0.9} />
+      </mesh>
+      <mesh position={[0.55, 10.1, 0]}>
+        <boxGeometry args={[1.0, 0.65, 0.02]} />
+        <meshStandardMaterial color="#111111" roughness={0.9} side={THREE.DoubleSide} />
+      </mesh>
+      {/* Skull on flag */}
+      <mesh position={[0.55, 10.2, 0.02]}>
+        <boxGeometry args={[0.22, 0.18, 0.01]} />
+        <meshStandardMaterial color="#EEEEEE" />
+      </mesh>
+      {/* Straw hat brim on flag */}
+      <mesh position={[0.55, 10.06, 0.02]}>
+        <boxGeometry args={[0.35, 0.06, 0.01]} />
+        <meshStandardMaterial color="#FFD700" />
+      </mesh>
+      <Text position={[0, 7.7, -1.15]} fontSize={0.18} color="#FFD700" anchorX="center">CROW'S NEST</Text>
+    </group>
+  )
+}
+
+function MensQuarters() {
+  // Forward section of the ship — hammock bunks, lockers, wanted posters
+  return (
+    <group position={[0, 0, 4]}>
+      {/* Floor */}
+      <mesh position={[0, -0.02, 0]} receiveShadow>
+        <boxGeometry args={[7, 0.05, 4]} />
+        <meshStandardMaterial color="#8B6914" roughness={0.85} />
+      </mesh>
+      {/* Bunk beds — port side, 3 double-deckers */}
+      {[-2.5, 0, 2.5].map((bx, bi) => (
+        <group key={bi} position={[bx, 0, -1.5]}>
+          {/* Frame */}
+          <mesh position={[0, 0.5, 0]} castShadow>
+            <boxGeometry args={[0.06, 1.0, 1.6]} />
+            <meshStandardMaterial color="#5C3010" roughness={0.8} />
+          </mesh>
+          <mesh position={[0, 0.5, 0]} castShadow>
+            <boxGeometry args={[0.8, 0.06, 1.6]} />
+            <meshStandardMaterial color="#6B3A10" roughness={0.8} />
+          </mesh>
+          {/* Lower bunk */}
+          <mesh position={[0, 0.22, 0]}>
+            <boxGeometry args={[0.72, 0.08, 1.5]} />
+            <meshStandardMaterial color="#8B5E3C" roughness={0.7} />
+          </mesh>
+          <mesh position={[0, 0.28, 0]}>
+            <boxGeometry args={[0.7, 0.06, 1.48]} />
+            <meshStandardMaterial color="#F0EBE0" roughness={0.9} />
+          </mesh>
+          {/* Upper bunk */}
+          <mesh position={[0, 0.72, 0]}>
+            <boxGeometry args={[0.72, 0.08, 1.5]} />
+            <meshStandardMaterial color="#8B5E3C" roughness={0.7} />
+          </mesh>
+          <mesh position={[0, 0.78, 0]}>
+            <boxGeometry args={[0.7, 0.06, 1.48]} />
+            <meshStandardMaterial color="#E8E0D0" roughness={0.9} />
+          </mesh>
+          {/* Pillow upper */}
+          <mesh position={[0, 0.84, -0.6]}>
+            <boxGeometry args={[0.55, 0.07, 0.28]} />
+            <meshStandardMaterial color="#FFFFFF" roughness={0.9} />
+          </mesh>
+          {/* Pillow lower */}
+          <mesh position={[0, 0.34, -0.6]}>
+            <boxGeometry args={[0.55, 0.07, 0.28]} />
+            <meshStandardMaterial color="#FFFFFF" roughness={0.9} />
+          </mesh>
+        </group>
+      ))}
+      {/* Lockers — starboard side */}
+      {[-2.2, -1.1, 0, 1.1, 2.2].map((lx, li) => (
+        <group key={li} position={[lx, 0, 1.7]}>
+          <mesh position={[0, 0.65, 0]} castShadow>
+            <boxGeometry args={[0.85, 1.3, 0.35]} />
+            <meshStandardMaterial color="#4A4A5A" roughness={0.6} metalness={0.3} />
+          </mesh>
+          {/* Locker handle */}
+          <mesh position={[0.25, 0.68, 0.18]}>
+            <boxGeometry args={[0.04, 0.14, 0.03]} />
+            <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
+          </mesh>
+          {/* Locker door seam */}
+          <mesh position={[0, 0.65, 0.175]}>
+            <boxGeometry args={[0.82, 1.26, 0.01]} />
+            <meshStandardMaterial color="#333" roughness={0.8} />
+          </mesh>
+        </group>
+      ))}
+      {/* Wanted posters on wall */}
+      {[[-2.5, 1.2, -1.98], [-1.2, 1.2, -1.98], [0, 1.2, -1.98], [1.2, 1.2, -1.98]].map(([px, py, pz], pi) => (
+        <group key={pi} position={[px, py, pz]}>
+          <mesh>
+            <boxGeometry args={[0.4, 0.52, 0.02]} />
+            <meshStandardMaterial color="#F5E8C0" roughness={0.9} />
+          </mesh>
+          {/* WANTED text suggestion */}
+          <mesh position={[0, 0.16, 0.01]}>
+            <boxGeometry args={[0.32, 0.06, 0.01]} />
+            <meshStandardMaterial color="#8B0000" roughness={0.8} />
+          </mesh>
+          {/* Face placeholder — different colors per person */}
+          <mesh position={[0, -0.04, 0.01]}>
+            <boxGeometry args={[0.28, 0.22, 0.01]} />
+            <meshStandardMaterial color={['#F4C28C','#F4C28C','#8B5A2B','#D4A574'][pi]} roughness={0.8} />
+          </mesh>
+          {/* Bounty bar */}
+          <mesh position={[0, -0.2, 0.01]}>
+            <boxGeometry args={[0.32, 0.06, 0.01]} />
+            <meshStandardMaterial color="#1A1A2A" roughness={0.8} />
+          </mesh>
+        </group>
+      ))}
+      {/* Kotatsu-style sunken table center */}
+      <mesh position={[0, 0.14, 0.2]} castShadow>
+        <boxGeometry args={[1.2, 0.06, 0.8]} />
+        <meshStandardMaterial color="#6B4423" roughness={0.6} />
+      </mesh>
+      {/* Emergency alarm bell */}
+      <group position={[2.8, 1.6, -1.8]}>
+        <mesh>
+          <cylinderGeometry args={[0.12, 0.16, 0.2, 10]} />
+          <meshStandardMaterial color="#CC8800" roughness={0.3} metalness={0.7} />
+        </mesh>
+        <mesh position={[0, -0.12, 0]}>
+          <sphereGeometry args={[0.05, 8, 6]} />
+          <meshStandardMaterial color="#888" metalness={0.8} roughness={0.2} />
+        </mesh>
+      </group>
+      <Text position={[0, 1.8, -1.95]} fontSize={0.2} color="#C8A020" anchorX="center">MEN'S QUARTERS</Text>
+    </group>
+  )
+}
+
 // ══ Scene Error Boundary (prevents black-screen from effect component crashes) ══
 class SceneErrorBoundary extends Component {
   constructor(props) { super(props); this.state = { hasError: false } }
@@ -974,6 +1309,12 @@ export default function App() {
           <MusicLounge />
           {/* Sick Bay — Chopper */}
           <SickBay />
+          {/* Robin's Library — circular bookshelves, poneglyph, globe */}
+          <RobinsLibrary />
+          {/* Crow's Nest Tower — telescope, gym, Jolly Roger */}
+          <CrowsNestTower />
+          {/* Men's Quarters — bunks, lockers, wanted posters */}
+          <MensQuarters />
 
           {CREW.map(agent => (
             <DeskGroup

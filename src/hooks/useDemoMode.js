@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from 'react'
 import { CREW } from '../data/crewConfig'
 
-// Per-agent demo state cycles
+// Per-agent demo state cycles — all 7 crew
 const DEMO_CYCLES = {
-  Nami:    ['idle', 'working', 'idle', 'thinking'],
-  Franky:  ['working', 'working', 'idle', 'working'],
-  Chopper: ['idle', 'thinking', 'idle', 'working'],
+  Nami:    ['idle', 'working', 'idle', 'thinking', 'working'],
+  Franky:  ['working', 'working', 'idle', 'working', 'thinking'],
+  Chopper: ['idle', 'thinking', 'idle', 'working', 'idle'],
+  Robin:   ['thinking', 'idle', 'thinking', 'working', 'idle'],
+  Brook:   ['idle', 'idle', 'working', 'idle', 'thinking'],
+  Sanji:   ['working', 'working', 'working', 'idle', 'working'],
+  Usopp:   ['idle', 'working', 'thinking', 'working', 'idle'],
 }
 
 // Phase offsets so agents don't all change at once
@@ -13,22 +17,19 @@ const PHASE_OFFSETS = {
   Nami:    0,
   Franky:  1,
   Chopper: 2,
+  Robin:   3,
+  Brook:   4,
+  Sanji:   0,
+  Usopp:   2,
 }
 
-// Active crew = those with an IP configured
-const ACTIVE_CREW = CREW.filter(c => c.ip !== null)
+// Active crew = all crew (demo activates when all are offline)
+const ACTIVE_CREW = CREW
 
 function buildDemoStatuses(idx, tokenBase) {
   return CREW.map(crew => {
-    if (crew.ip === null) {
-      // No gateway — always standby in demo
-      return { name: crew.name, state: 'standby' }
-    }
-    const cycles = DEMO_CYCLES[crew.name]
+    const cycles = DEMO_CYCLES[crew.name] || ['idle', 'working']
     const offset = PHASE_OFFSETS[crew.name] ?? 0
-    if (!cycles) {
-      return { name: crew.name, state: 'standby' }
-    }
     const state = cycles[(idx + offset) % cycles.length]
     const isActive = state === 'working' || state === 'thinking'
     return {
@@ -64,10 +65,7 @@ export default function useDemoMode(rawStatuses) {
 
   // ── Watch for all-offline / any-online transitions ─────────────────────────
   useEffect(() => {
-    const anyOnline = ACTIVE_CREW.some(crew => {
-      const s = rawStatuses.find(s => s.name === crew.name)
-      return s && s.state !== 'offline'
-    })
+    const anyOnline = rawStatuses.some(s => s && s.state !== 'offline' && s.state !== 'standby')
 
     if (anyOnline) {
       // Gateway came back — exit demo mode immediately
@@ -83,7 +81,7 @@ export default function useDemoMode(rawStatuses) {
     // All offline path
     const allOffline = ACTIVE_CREW.every(crew => {
       const s = rawStatuses.find(s => s.name === crew.name)
-      return !s || s.state === 'offline'
+      return !s || s.state === 'offline' || s.state === 'standby'
     })
 
     if (allOffline && !demoActiveRef.current && !allOfflineTimerRef.current) {

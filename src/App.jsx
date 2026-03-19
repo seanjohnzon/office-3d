@@ -1456,7 +1456,7 @@ export default function App() {
 
   return (
     <StatusContext.Provider value={statuses}>
-    <div style={{ width:'100vw',height:'100vh',background:'#87CEEB' }}>
+    <div style={{ width:'100vw',height:'100dvh',background:'#87CEEB',overflow:'hidden',position:'fixed',top:0,left:0 }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } } @keyframes helpFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }`}</style>
       <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} ambientEnabled={ambientEnabled} setAmbientEnabled={setAmbientEnabled} hasInteracted={hasInteracted} showDashboard={showDashboard} setShowDashboard={setShowDashboard} />
       <SprintHUD />
@@ -1466,9 +1466,9 @@ export default function App() {
       <Canvas
         shadows
         camera={{ position: isMobile ? [0, 55, 80] : [0, 35, 70], fov: isMobile ? 50 : 50 }}
-        style={{ width:'100%',height:'100%',paddingTop:isMobile?'44px':'60px',paddingBottom:'32px',boxSizing:'border-box' }}
+        dpr={isMobile ? [1, 1.5] : [1, 2]}
+        style={{ width:'100%',height:'100%',paddingTop:isMobile?'44px':'60px',paddingBottom:isMobile?'0':'32px',boxSizing:'border-box',touchAction:'none',WebkitUserSelect:'none',userSelect:'none' }}
         gl={{ antialias:true }}
-        touch-action="none"
         onCreated={({ gl, scene }) => {
           scene.fog = null // Sunny sails in clear bright skies — no fog
           gl.domElement.addEventListener('webglcontextlost', (e) => {
@@ -1479,7 +1479,7 @@ export default function App() {
       >
         <ambientLight intensity={skyState.ambientIntensity} color={skyState.ambientColor} />
         <directionalLight position={[20, 40, 25]} intensity={skyState.dirLightIntensity} color="#FFF5E0" castShadow
-          shadow-mapSize={[2048, 2048]}
+          shadow-mapSize={isMobile ? [512, 512] : [2048, 2048]}
           shadow-camera-near={0.5} shadow-camera-far={200}
           shadow-camera-left={-60} shadow-camera-right={60}
           shadow-camera-top={60} shadow-camera-bottom={-60}
@@ -1561,10 +1561,30 @@ export default function App() {
 
         <SceneErrorBoundary><SceneEffects /></SceneErrorBoundary>
 
-        <OrbitControls ref={orbitRef} target={[0, 0, -5]} enableDamping dampingFactor={0.06}
-          minDistance={6} maxDistance={120} maxPolarAngle={Math.PI / 2.3}
-          touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
-          enableZoom enableRotate enablePan={!isMobile} />
+        <OrbitControls
+          ref={orbitRef}
+          target={[0, 0, -5]}
+          enableDamping
+          dampingFactor={0.08}
+          minDistance={8}
+          maxDistance={120}
+          maxPolarAngle={Math.PI / 2.3}
+          enableZoom={true}
+          enableRotate={true}
+          enablePan={true}
+          touches={{
+            ONE: THREE.TOUCH.ROTATE,
+            TWO: THREE.TOUCH.DOLLY_PAN,
+          }}
+          mouseButtons={{
+            LEFT: THREE.MOUSE.ROTATE,
+            MIDDLE: THREE.MOUSE.DOLLY,
+            RIGHT: THREE.MOUSE.PAN,
+          }}
+          zoomSpeed={isMobile ? 0.6 : 1.0}
+          rotateSpeed={isMobile ? 0.6 : 0.8}
+          panSpeed={isMobile ? 0.8 : 1.0}
+        />
         <CameraFocus target={focusTarget} orbitRef={orbitRef} />
       </Canvas>
 

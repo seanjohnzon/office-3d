@@ -1,9 +1,9 @@
 import { useState, useEffect } from 'react'
 
 const FALLBACK = {
-  header: "SPRINT 2 · LIVE",
-  line1: "D2.22 ✓ Glow Ring  D2.21 ✓ Desk Lights",
-  line2: "D2.23 ✓ Dynamic Board  D2.24 →",
+  header: "THOUSAND SUNNY · D2.24",
+  line1: "D2.23 ✓ Dynamic WB · D2.24 ✓ Sails",
+  line2: "D2.25 → Captain's Dashboard",
   statusColor: "#2ecc71"
 }
 

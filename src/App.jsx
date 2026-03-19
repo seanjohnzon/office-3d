@@ -28,6 +28,7 @@ import CrewTicker from './components/CrewTicker'
 import SceneEffects from './components/SceneEffects'
 import KitchenStation from './components/KitchenStation'
 import WorkshopStation from './components/WorkshopStation'
+import AnimatedMast from './components/AnimatedMast'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -390,8 +391,8 @@ export default function App() {
         <LionFigurehead />
 
         {/* Masts */}
-        <Mast position={[-3, 0, -4]} />
-        <Mast position={[3, 0, -4]} />
+        <AnimatedMast position={[-3, 0, -4]} />
+        <AnimatedMast position={[3, 0, -4]} />
 
         {/* Captain's Log (was Whiteboard) */}
         <CaptainsLog data={whiteboardData} />

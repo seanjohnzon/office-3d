@@ -36,6 +36,234 @@ import ShipBob from './components/ShipBob'
 import useDayNightCycle from './hooks/useDayNightCycle'
 import DynamicSky from './components/DynamicSky'
 
+// ══ Ship Shape Math ══════════════════════════════════════════════════════════
+
+function shipWidthAtZ(z) {
+  // z ranges from -22 (stern) to +20 (bow)
+  // Returns half-width at that z position
+  const sternZ = -22, bowZ = 20
+  const totalLen = bowZ - sternZ
+  const t = (z - sternZ) / totalLen  // 0 at stern, 1 at bow
+  const sternWidth = 5    // half-width at stern
+  const midWidth = 28     // half-width at widest (midship)
+  const bowWidth = 2      // half-width at bow tip
+  if (t < 0.45) {
+    const tt = t / 0.45
+    return sternWidth + (midWidth - sternWidth) * Math.sin(tt * Math.PI / 2)
+  } else {
+    const tt = (t - 0.45) / 0.55
+    return midWidth + (bowWidth - midWidth) * Math.sin(tt * Math.PI / 2)
+  }
+}
+
+function ShipDeck() {
+  const plankColors = ['#C4A265', '#B8934A', '#A07840', '#C4A265', '#B8934A']
+  const planks = []
+  const sternZ = -22, bowZ = 20
+  const plankDepth = 1.2
+  const numPlanks = Math.ceil((bowZ - sternZ) / plankDepth)
+
+  for (let i = 0; i < numPlanks; i++) {
+    const z = sternZ + i * plankDepth + plankDepth / 2
+    const halfW = shipWidthAtZ(z)
+    const color = plankColors[i % plankColors.length]
+    planks.push(
+      <mesh key={`plank-${i}`} position={[0, 0, z]} receiveShadow castShadow>
+        <boxGeometry args={[halfW * 2, 0.08, plankDepth - 0.05]} />
+        <meshStandardMaterial color={color} roughness={0.82} />
+      </mesh>
+    )
+    planks.push(
+      <mesh key={`gap-${i}`} position={[0, 0.04, z - plankDepth / 2]}>
+        <boxGeometry args={[halfW * 2 + 0.1, 0.01, 0.05]} />
+        <meshStandardMaterial color="#6B3A10" roughness={1} />
+      </mesh>
+    )
+  }
+  return <group>{planks}</group>
+}
+
+function ShipHullShaped() {
+  const hullColor = '#C4A265'
+  const hullDark = '#8B6914'
+  const goldTrim = '#D4870A'
+  const segments = []
+
+  const sternZ = -22, bowZ = 20
+  const numSegs = 20
+  const segLen = (bowZ - sternZ) / numSegs
+
+  for (let i = 0; i < numSegs; i++) {
+    const z1 = sternZ + i * segLen
+    const z2 = z1 + segLen
+    const zMid = (z1 + z2) / 2
+    const w1 = shipWidthAtZ(z1)
+    const w2 = shipWidthAtZ(z2)
+    const wMid = (w1 + w2) / 2
+    const dw = w2 - w1
+    const angle = Math.atan2(dw, segLen)
+
+    segments.push(
+      <mesh key={`port-${i}`} position={[-wMid, -0.8, zMid]} rotation={[0, -angle, 0]} castShadow>
+        <boxGeometry args={[0.5, 2.2, segLen + 0.2]} />
+        <meshStandardMaterial color={i < 4 || i > 16 ? hullDark : hullColor} roughness={0.85} />
+      </mesh>
+    )
+    segments.push(
+      <mesh key={`ptrim-${i}`} position={[-wMid - 0.05, 0.15, zMid]} rotation={[0, -angle, 0]}>
+        <boxGeometry args={[0.12, 0.12, segLen + 0.2]} />
+        <meshStandardMaterial color={goldTrim} roughness={0.3} metalness={0.7} emissive={goldTrim} emissiveIntensity={0.15} />
+      </mesh>
+    )
+    segments.push(
+      <mesh key={`pcap-${i}`} position={[-wMid - 0.08, 0.45, zMid]} rotation={[0, -angle, 0]} castShadow>
+        <boxGeometry args={[0.28, 0.18, segLen + 0.1]} />
+        <meshStandardMaterial color="#5C3010" roughness={0.8} />
+      </mesh>
+    )
+    segments.push(
+      <mesh key={`star-${i}`} position={[wMid, -0.8, zMid]} rotation={[0, angle, 0]} castShadow>
+        <boxGeometry args={[0.5, 2.2, segLen + 0.2]} />
+        <meshStandardMaterial color={i < 4 || i > 16 ? hullDark : hullColor} roughness={0.85} />
+      </mesh>
+    )
+    segments.push(
+      <mesh key={`strim-${i}`} position={[wMid + 0.05, 0.15, zMid]} rotation={[0, angle, 0]}>
+        <boxGeometry args={[0.12, 0.12, segLen + 0.2]} />
+        <meshStandardMaterial color={goldTrim} roughness={0.3} metalness={0.7} emissive={goldTrim} emissiveIntensity={0.15} />
+      </mesh>
+    )
+    segments.push(
+      <mesh key={`scap-${i}`} position={[wMid + 0.08, 0.45, zMid]} rotation={[0, angle, 0]} castShadow>
+        <boxGeometry args={[0.28, 0.18, segLen + 0.1]} />
+        <meshStandardMaterial color="#5C3010" roughness={0.8} />
+      </mesh>
+    )
+  }
+
+  const sternW = shipWidthAtZ(sternZ) * 2
+  segments.push(
+    <mesh key="stern" position={[0, -0.8, sternZ]} castShadow>
+      <boxGeometry args={[sternW, 2.2, 0.5]} />
+      <meshStandardMaterial color={hullDark} roughness={0.85} />
+    </mesh>
+  )
+  segments.push(
+    <mesh key="sterntrim" position={[0, 0.15, sternZ]}>
+      <boxGeometry args={[sternW + 0.2, 0.12, 0.15]} />
+      <meshStandardMaterial color={goldTrim} roughness={0.3} metalness={0.7} />
+    </mesh>
+  )
+
+  ;[-9, 0, 9].forEach((hz, hi) => {
+    const hw = shipWidthAtZ(hz)
+    segments.push(
+      <group key={`dock-${hi}`} position={[-hw - 0.1, -0.5, hz]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.2, 1.5, 2.5]} />
+          <meshStandardMaterial color="#1A3A1A" roughness={0.9} />
+        </mesh>
+        <mesh position={[0.12, 0, 0]}>
+          <boxGeometry args={[0.08, 1.6, 2.6]} />
+          <meshStandardMaterial color={goldTrim} roughness={0.4} metalness={0.6} />
+        </mesh>
+      </group>
+    )
+  })
+
+  ;[[-4, 3], [0, 3], [4, 3]].forEach(([az], ai) => {
+    const aqW = shipWidthAtZ(az)
+    segments.push(
+      <mesh key={`aq-${ai}`} position={[aqW + 0.1, 0.5, az]}>
+        <boxGeometry args={[0.15, 2.5, 2.4]} />
+        <meshStandardMaterial color="#88CCFF" transparent opacity={0.5} roughness={0} />
+      </mesh>
+    )
+    segments.push(
+      <mesh key={`aqglow-${ai}`} position={[aqW - 0.1, 0.5, az]}>
+        <boxGeometry args={[0.08, 2.3, 2.2]} />
+        <meshStandardMaterial color="#004488" emissive="#0044AA" emissiveIntensity={0.6} transparent opacity={0.4} />
+      </mesh>
+    )
+  })
+
+  segments.push(
+    <group key="captdoor" position={[0, 0.5, sternZ + 0.4]}>
+      <mesh castShadow>
+        <boxGeometry args={[2.0, 3.0, 0.2]} />
+        <meshStandardMaterial color="#3A2008" roughness={0.8} />
+      </mesh>
+      <mesh position={[0, 0, 0.12]}>
+        <boxGeometry args={[1.6, 2.7, 0.1]} />
+        <meshStandardMaterial color="#5C3010" roughness={0.7} />
+      </mesh>
+      <Text position={[0, 1.8, 0.2]} fontSize={0.25} color="#D4870A" anchorX="center">CAPTAIN'S QUARTERS</Text>
+    </group>
+  )
+
+  segments.push(
+    <mesh key="helmplatform" position={[0, 0.4, -18]} castShadow receiveShadow>
+      <boxGeometry args={[shipWidthAtZ(-18) * 1.5, 0.4, 8]} />
+      <meshStandardMaterial color="#8B5E3C" roughness={0.85} />
+    </mesh>
+  )
+
+  segments.push(
+    <mesh key="bowplatform" position={[0, 0.3, 16]} castShadow receiveShadow>
+      <boxGeometry args={[shipWidthAtZ(16) * 1.8, 0.35, 6]} />
+      <meshStandardMaterial color="#8B5E3C" roughness={0.85} />
+    </mesh>
+  )
+
+  return <group>{segments}</group>
+}
+
+function RoomBox({ position, size, wallColor, label, children }) {
+  const [w, h, d] = size
+  const wc = wallColor || '#6B4423'
+  const wallThick = 0.2
+  const doorW = 2.0, doorH = 2.2
+
+  return (
+    <group position={position}>
+      <mesh position={[0, -wallThick/2, 0]} receiveShadow>
+        <boxGeometry args={[w, wallThick, d]} />
+        <meshStandardMaterial color="#8B5E3C" roughness={0.85} />
+      </mesh>
+      <mesh position={[0, h/2, -d/2]} castShadow>
+        <boxGeometry args={[w, h, wallThick]} />
+        <meshStandardMaterial color={wc} roughness={0.8} />
+      </mesh>
+      <mesh position={[-w/2, h/2, 0]} castShadow>
+        <boxGeometry args={[wallThick, h, d]} />
+        <meshStandardMaterial color={wc} roughness={0.8} />
+      </mesh>
+      <mesh position={[w/2, h/2, 0]} castShadow>
+        <boxGeometry args={[wallThick, h, d]} />
+        <meshStandardMaterial color={wc} roughness={0.8} />
+      </mesh>
+      <mesh position={[-(w/2 - (w - doorW)/4), h/2, d/2]} castShadow>
+        <boxGeometry args={[(w - doorW) / 2, h, wallThick]} />
+        <meshStandardMaterial color={wc} roughness={0.8} />
+      </mesh>
+      <mesh position={[(w/2 - (w - doorW)/4), h/2, d/2]} castShadow>
+        <boxGeometry args={[(w - doorW) / 2, h, wallThick]} />
+        <meshStandardMaterial color={wc} roughness={0.8} />
+      </mesh>
+      <mesh position={[0, h - (h - doorH)/2, d/2]} castShadow>
+        <boxGeometry args={[doorW, h - doorH, wallThick]} />
+        <meshStandardMaterial color={wc} roughness={0.8} />
+      </mesh>
+      {label && (
+        <Text position={[0, h + 0.3, d/2 + 0.1]} fontSize={0.35} color="#FFD700" anchorX="center">
+          {label}
+        </Text>
+      )}
+      {children}
+    </group>
+  )
+}
+
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
 function OceanSkyEnvironment() {
@@ -137,7 +365,7 @@ function GrassLawn() {
     { x: 0.6, z: -0.6, color: '#FFD700' },
   ]
   return (
-    <group position={[0, 0.02, -8]}>
+    <group position={[0, 0.1, -5]}>
       {/* Lawn base */}
       <mesh position={[0, 0, 0]}>
         <boxGeometry args={[16, 0.05, 10]} />
@@ -1237,7 +1465,7 @@ export default function App() {
       <TaskFeed />
       <Canvas
         shadows
-        camera={{ position: isMobile ? [0, 55, 80] : [0, 45, 65], fov: isMobile ? 50 : 50 }}
+        camera={{ position: isMobile ? [0, 55, 80] : [0, 35, 70], fov: isMobile ? 50 : 50 }}
         style={{ width:'100%',height:'100%',paddingTop:isMobile?'44px':'60px',paddingBottom:'32px',boxSizing:'border-box' }}
         gl={{ antialias:true }}
         touch-action="none"
@@ -1271,8 +1499,8 @@ export default function App() {
         {/* Ship content — all bobs with the ocean */}
         <ShipBob>
           {/* Ship Structure */}
-          <WoodenDeck />
-          <ThousandSunnyHull />
+          <ShipDeck />
+          <ShipHullShaped />
           <LionFigurehead />
 
           {/* Masts */}
@@ -1333,8 +1561,8 @@ export default function App() {
 
         <SceneErrorBoundary><SceneEffects /></SceneErrorBoundary>
 
-        <OrbitControls ref={orbitRef} target={[0, 1, 0]} enableDamping dampingFactor={0.06}
-          minDistance={6} maxDistance={120} maxPolarAngle={Math.PI / 2.1}
+        <OrbitControls ref={orbitRef} target={[0, 0, -5]} enableDamping dampingFactor={0.06}
+          minDistance={6} maxDistance={120} maxPolarAngle={Math.PI / 2.3}
           touches={{ ONE: THREE.TOUCH.ROTATE, TWO: THREE.TOUCH.DOLLY_ROTATE }}
           enableZoom enableRotate enablePan={!isMobile} />
         <CameraFocus target={focusTarget} orbitRef={orbitRef} />

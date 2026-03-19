@@ -167,45 +167,198 @@ function LionFigurehead() {
   )
 }
 
-function ShipHull() {
-  const hullColor = '#5C3010'
-  const plankArgs = [20, 0.55, 0.22]
-  const hullHeights = [0.3, 0.85, 1.4, 1.95]
+function ThousandSunnyHull() {
+  const hullGreen = '#2C5F2E'
+  const hullDark = '#1A3D1C'
+  const goldTrim = '#C8A000'
+
   return (
     <group>
-      {/* Left hull */}
-      {hullHeights.map((y, i) => (
-        <mesh key={`lh-${i}`} position={[-10, y, -1]} castShadow>
-          <boxGeometry args={[0.22, 0.5, 16]} />
-          <meshStandardMaterial color={hullColor} roughness={0.9} />
-        </mesh>
-      ))}
-      {/* Right hull */}
-      {hullHeights.map((y, i) => (
-        <mesh key={`rh-${i}`} position={[10, y, -1]} castShadow>
-          <boxGeometry args={[0.22, 0.5, 16]} />
-          <meshStandardMaterial color={hullColor} roughness={0.9} />
-        </mesh>
-      ))}
-      {/* Back hull */}
-      {hullHeights.map((y, i) => (
-        <mesh key={`bh-${i}`} position={[0, y, -8]} castShadow>
-          <boxGeometry args={[20.44, 0.5, 0.22]} />
-          <meshStandardMaterial color={hullColor} roughness={0.9} />
-        </mesh>
-      ))}
-      {/* Hull cap rails */}
-      <mesh position={[-10, 2.25, -1]}>
-        <boxGeometry args={[0.3, 0.12, 16]} />
+      {/* === PORT SIDE HULL (left, x negative) === */}
+      <mesh position={[-9.5, -0.3, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 0.6, 18]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[-9.2, -1.1, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 1.0, 17]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[-8.8, -2.2, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 1.2, 15]} />
+        <meshStandardMaterial color={hullDark} roughness={0.9} />
+      </mesh>
+      <mesh position={[-8.2, -3.3, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 1.0, 12]} />
+        <meshStandardMaterial color={hullDark} roughness={0.9} />
+      </mesh>
+      <mesh position={[-9.6, 0.05, -0.5]}>
+        <boxGeometry args={[0.12, 0.12, 18]} />
+        <meshStandardMaterial color={goldTrim} roughness={0.4} metalness={0.6} emissive={goldTrim} emissiveIntensity={0.2} />
+      </mesh>
+      <mesh position={[-9.6, 0.4, -0.5]} castShadow>
+        <boxGeometry args={[0.25, 0.18, 18]} />
         <meshStandardMaterial color="#3A1A05" roughness={0.8} />
       </mesh>
-      <mesh position={[10, 2.25, -1]}>
-        <boxGeometry args={[0.3, 0.12, 16]} />
+
+      {/* === STARBOARD SIDE HULL (right, x positive) === */}
+      <mesh position={[9.5, -0.3, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 0.6, 18]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[9.2, -1.1, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 1.0, 17]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[8.8, -2.2, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 1.2, 15]} />
+        <meshStandardMaterial color={hullDark} roughness={0.9} />
+      </mesh>
+      <mesh position={[8.2, -3.3, -0.5]} castShadow>
+        <boxGeometry args={[0.5, 1.0, 12]} />
+        <meshStandardMaterial color={hullDark} roughness={0.9} />
+      </mesh>
+      <mesh position={[9.6, 0.05, -0.5]}>
+        <boxGeometry args={[0.12, 0.12, 18]} />
+        <meshStandardMaterial color={goldTrim} roughness={0.4} metalness={0.6} emissive={goldTrim} emissiveIntensity={0.2} />
+      </mesh>
+      <mesh position={[9.6, 0.4, -0.5]} castShadow>
+        <boxGeometry args={[0.25, 0.18, 18]} />
         <meshStandardMaterial color="#3A1A05" roughness={0.8} />
       </mesh>
-      <mesh position={[0, 2.25, -8]}>
-        <boxGeometry args={[20.44, 0.12, 0.3]} />
+
+      {/* === STERN (back wall at z=-9) === */}
+      <mesh position={[0, -1.5, -9]} castShadow>
+        <boxGeometry args={[19, 3.5, 0.4]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[0, 0.05, -9]}>
+        <boxGeometry args={[19.5, 0.12, 0.15]} />
+        <meshStandardMaterial color={goldTrim} roughness={0.4} metalness={0.6} emissive={goldTrim} emissiveIntensity={0.2} />
+      </mesh>
+      <mesh position={[0, 0.4, -9]} castShadow>
+        <boxGeometry args={[19.5, 0.18, 0.3]} />
         <meshStandardMaterial color="#3A1A05" roughness={0.8} />
+      </mesh>
+
+      {/* === BOW TAPER (front, z=7 to 10) === */}
+      <mesh position={[-7.5, -0.5, 7.5]} rotation={[0, 0.35, 0]} castShadow>
+        <boxGeometry args={[0.4, 1.0, 4]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[-5.5, -1.5, 8.5]} rotation={[0, 0.5, 0]} castShadow>
+        <boxGeometry args={[0.4, 1.5, 3]} />
+        <meshStandardMaterial color={hullDark} roughness={0.9} />
+      </mesh>
+      <mesh position={[7.5, -0.5, 7.5]} rotation={[0, -0.35, 0]} castShadow>
+        <boxGeometry args={[0.4, 1.0, 4]} />
+        <meshStandardMaterial color={hullGreen} roughness={0.85} />
+      </mesh>
+      <mesh position={[5.5, -1.5, 8.5]} rotation={[0, -0.5, 0]} castShadow>
+        <boxGeometry args={[0.4, 1.5, 3]} />
+        <meshStandardMaterial color={hullDark} roughness={0.9} />
+      </mesh>
+
+      {/* === SOLDIER DOCK SYSTEM (port side, 3 hatches) === */}
+      {[-3, 0, 3].map((z, i) => (
+        <group key={i} position={[-9.55, -0.5, z]}>
+          <mesh castShadow>
+            <boxGeometry args={[0.15, 1.2, 1.8]} />
+            <meshStandardMaterial color="#1A3A1A" roughness={0.9} />
+          </mesh>
+          <mesh position={[0.08, 0, 0]}>
+            <boxGeometry args={[0.06, 1.3, 1.9]} />
+            <meshStandardMaterial color={goldTrim} roughness={0.5} metalness={0.5} />
+          </mesh>
+          <Text position={[0.14, 0, 0]} fontSize={0.22} color={goldTrim} rotation={[0, Math.PI/2, 0]} anchorX="center">
+            {`S-${i + 1}`}
+          </Text>
+        </group>
+      ))}
+
+      {/* === AQUARIUM BAR (starboard side, glowing blue panel) === */}
+      <group position={[9.5, 0.5, 1]}>
+        <mesh castShadow>
+          <boxGeometry args={[0.15, 1.8, 4.0]} />
+          <meshStandardMaterial color="#001833" roughness={0.1} metalness={0.2} transparent opacity={0.7} />
+        </mesh>
+        <mesh position={[-0.1, 0, 0]}>
+          <boxGeometry args={[0.05, 1.6, 3.8]} />
+          <meshStandardMaterial color="#003366" emissive="#0044AA" emissiveIntensity={0.8} transparent opacity={0.5} />
+        </mesh>
+        <mesh position={[0.1, 0, 0]}>
+          <boxGeometry args={[0.08, 1.9, 4.1]} />
+          <meshStandardMaterial color={goldTrim} roughness={0.4} metalness={0.6} />
+        </mesh>
+        <Text position={[0.2, 1.2, 0]} fontSize={0.18} color={goldTrim} rotation={[0, Math.PI/2, 0]} anchorX="center">
+          AQUARIUM BAR
+        </Text>
+      </group>
+
+      {/* === CAPTAIN'S QUARTERS ENTRANCE (stern, center) === */}
+      <group position={[0, 0.5, -8.8]}>
+        <mesh>
+          <boxGeometry args={[1.2, 2.2, 0.15]} />
+          <meshStandardMaterial color="#3A2008" roughness={0.8} />
+        </mesh>
+        <mesh position={[0, 0, 0.05]}>
+          <boxGeometry args={[1.0, 2.0, 0.08]} />
+          <meshStandardMaterial color="#5C3010" roughness={0.7} />
+        </mesh>
+        <mesh position={[0.3, 0, 0.1]}>
+          <boxGeometry args={[0.08, 0.08, 0.08]} />
+          <meshStandardMaterial color={goldTrim} metalness={0.8} roughness={0.2} />
+        </mesh>
+        <Text position={[0, 1.3, 0.1]} fontSize={0.14} color={goldTrim} anchorX="center">
+          CAPTAIN'S QUARTERS
+        </Text>
+      </group>
+
+      {/* === HELM PLATFORM (stern raised area for steering) === */}
+      <mesh position={[0, 0.35, -7]} castShadow receiveShadow>
+        <boxGeometry args={[8, 0.3, 4]} />
+        <meshStandardMaterial color="#7A5230" roughness={0.85} />
+      </mesh>
+      <mesh position={[0, 0.15, -5.2]} castShadow>
+        <boxGeometry args={[8, 0.15, 0.6]} />
+        <meshStandardMaterial color="#6B4423" roughness={0.85} />
+      </mesh>
+
+      {/* === BOW PLATFORM (front raised area, lion sits on it) === */}
+      <mesh position={[0, 0.2, 6.5]} castShadow receiveShadow>
+        <boxGeometry args={[6, 0.3, 3]} />
+        <meshStandardMaterial color="#7A5230" roughness={0.85} />
+      </mesh>
+    </group>
+  )
+}
+
+function CrowsNest({ position }) {
+  return (
+    <group position={position}>
+      {/* Nest barrel */}
+      <mesh castShadow>
+        <cylinderGeometry args={[0.55, 0.65, 0.7, 10]} />
+        <meshStandardMaterial color="#5C3010" roughness={0.8} />
+      </mesh>
+      {/* Floor inside */}
+      <mesh position={[0, -0.3, 0]}>
+        <cylinderGeometry args={[0.5, 0.5, 0.06, 10]} />
+        <meshStandardMaterial color="#8B5E3C" roughness={0.85} />
+      </mesh>
+      {/* Rail posts */}
+      {[0, 60, 120, 180, 240, 300].map((deg, i) => {
+        const r = 0.58, a = (deg * Math.PI) / 180
+        return (
+          <mesh key={i} position={[Math.sin(a)*r, 0.35, Math.cos(a)*r]}>
+            <boxGeometry args={[0.05, 0.5, 0.05]} />
+            <meshStandardMaterial color="#4A2800" roughness={0.9} />
+          </mesh>
+        )
+      })}
+      {/* Telescope prop */}
+      <mesh position={[0.3, 0.3, 0]} rotation={[0, 0, -0.4]}>
+        <cylinderGeometry args={[0.04, 0.06, 0.6, 8]} />
+        <meshStandardMaterial color="#888" roughness={0.4} metalness={0.7} />
       </mesh>
     </group>
   )
@@ -214,26 +367,33 @@ function ShipHull() {
 function Mast({ position }) {
   return (
     <group position={position}>
-      {/* Main mast pole */}
-      <mesh position={[0, 4, 0]} castShadow>
-        <boxGeometry args={[0.2, 8, 0.2]} />
+      {/* Main mast pole — taller now */}
+      <mesh position={[0, 5, 0]} castShadow>
+        <boxGeometry args={[0.22, 10, 0.22]} />
         <meshStandardMaterial color="#4A2800" roughness={0.9} />
       </mesh>
-      {/* Crossbar */}
-      <mesh position={[0, 5.5, 0]} castShadow>
-        <boxGeometry args={[3, 0.15, 0.15]} />
+      {/* Lower crossbar */}
+      <mesh position={[0, 4.0, 0]} castShadow>
+        <boxGeometry args={[5, 0.18, 0.18]} />
         <meshStandardMaterial color="#4A2800" roughness={0.9} />
       </mesh>
-      {/* Sail */}
-      <mesh position={[0, 3.8, 0.08]} castShadow>
-        <boxGeometry args={[2.8, 3.2, 0.04]} />
+      {/* Upper crossbar */}
+      <mesh position={[0, 7.5, 0]} castShadow>
+        <boxGeometry args={[3.5, 0.15, 0.15]} />
+        <meshStandardMaterial color="#4A2800" roughness={0.9} />
+      </mesh>
+      {/* Main sail */}
+      <mesh position={[0, 2.6, 0.1]} castShadow>
+        <boxGeometry args={[4.7, 3.5, 0.04]} />
         <meshStandardMaterial color="#F5F0E0" roughness={0.95} side={THREE.DoubleSide} />
       </mesh>
-      {/* Crow nest */}
-      <mesh position={[0, 8.2, 0]} castShadow>
-        <boxGeometry args={[0.8, 0.3, 0.8]} />
-        <meshStandardMaterial color="#5C3010" roughness={0.8} />
+      {/* Upper sail */}
+      <mesh position={[0, 6.5, 0.1]} castShadow>
+        <boxGeometry args={[3.3, 2.5, 0.04]} />
+        <meshStandardMaterial color="#F5F0E0" roughness={0.95} side={THREE.DoubleSide} />
       </mesh>
+      {/* Crow's nest at top */}
+      <CrowsNest position={[0, 10.3, 0]} />
     </group>
   )
 }
@@ -295,6 +455,56 @@ function CaptainsLog({ data }) {
       <Text position={[0, 0.38, 0.06]} fontSize={0.18} color="#1A1A2E" anchorX="center" fontWeight="bold">{d.header}</Text>
       <Text position={[0, 0.08, 0.06]} fontSize={0.105} color="#444" anchorX="center">{d.line1}</Text>
       <Text position={[0, -0.22, 0.06]} fontSize={0.095} color={d.statusColor} anchorX="center">{d.line2}</Text>
+    </group>
+  )
+}
+
+function StrategyRoom() {
+  return (
+    <group position={[0, 0, -5]}>
+      {/* Back wall */}
+      <mesh position={[0, 1.5, -1.8]} castShadow>
+        <boxGeometry args={[5, 3, 0.15]} />
+        <meshStandardMaterial color="#4A3010" roughness={0.85} />
+      </mesh>
+      {/* Left wall */}
+      <mesh position={[-2.4, 1.5, -0.5]} castShadow>
+        <boxGeometry args={[0.15, 3, 2.5]} />
+        <meshStandardMaterial color="#4A3010" roughness={0.85} />
+      </mesh>
+      {/* Right wall */}
+      <mesh position={[2.4, 1.5, -0.5]} castShadow>
+        <boxGeometry args={[0.15, 3, 2.5]} />
+        <meshStandardMaterial color="#4A3010" roughness={0.85} />
+      </mesh>
+      {/* Roof */}
+      <mesh position={[0, 3.1, -0.9]} castShadow>
+        <boxGeometry args={[5, 0.12, 3]} />
+        <meshStandardMaterial color="#3A2008" roughness={0.8} />
+      </mesh>
+      {/* Round meeting table */}
+      <mesh position={[0, 0.6, -0.4]} castShadow>
+        <cylinderGeometry args={[0.9, 0.9, 0.08, 16]} />
+        <meshStandardMaterial color="#8B6914" roughness={0.5} metalness={0.1} />
+      </mesh>
+      {/* Table leg */}
+      <mesh position={[0, 0.3, -0.4]} castShadow>
+        <cylinderGeometry args={[0.07, 0.12, 0.52, 8]} />
+        <meshStandardMaterial color="#6B4F10" roughness={0.6} />
+      </mesh>
+      {/* Hologram map on table */}
+      <mesh position={[0, 0.67, -0.4]}>
+        <cylinderGeometry args={[0.6, 0.6, 0.02, 16]} />
+        <meshStandardMaterial color="#002244" emissive="#0044FF" emissiveIntensity={0.6} transparent opacity={0.7} />
+      </mesh>
+      {/* Log Pose on table */}
+      <mesh position={[0.3, 0.68, -0.2]}>
+        <cylinderGeometry args={[0.06, 0.06, 0.14, 8]} />
+        <meshStandardMaterial color="#888" roughness={0.3} metalness={0.7} />
+      </mesh>
+      <Text position={[0, 3.3, -1.75]} fontSize={0.2} color="#D4A020" anchorX="center">
+        STRATEGY ROOM
+      </Text>
     </group>
   )
 }
@@ -401,7 +611,7 @@ export default function App() {
 
         {/* Ship Structure */}
         <WoodenDeck />
-        <ShipHull />
+        <ThousandSunnyHull />
         <LionFigurehead />
 
         {/* Masts */}
@@ -414,16 +624,21 @@ export default function App() {
         {/* Grass lawn area */}
         <GrassLawn />
 
-        {/* Navigation wheel at Nami's station */}
-        <NavigationWheel position={[-6.5, 1.0, -5]} />
+        {/* Helm at stern */}
+        <NavigationWheel position={[0, 1.85, -7]} />
 
         {/* Cannons */}
-        <Cannon position={[-9, 0.3, 0]} rotateY={0} />
-        <Cannon position={[9, 0.3, 0]} rotateY={Math.PI} />
+        <Cannon position={[-9, 0.3, -2]} rotateY={Math.PI / 2} />
+        <Cannon position={[-9, 0.3, 1]} rotateY={Math.PI / 2} />
+        <Cannon position={[9, 0.3, -2]} rotateY={-Math.PI / 2} />
+        <Cannon position={[9, 0.3, 1]} rotateY={-Math.PI / 2} />
+
+        {/* Strategy Room (center back) */}
+        <StrategyRoom />
 
         {/* Signature crew stations */}
-        <KitchenStation position={[0, 0, 6.5]} />
-        <WorkshopStation position={[-3, 0, 6.5]} />
+        <KitchenStation position={[3, 0, 4.5]} />
+        <WorkshopStation position={[-4, 0, 4.5]} />
 
         {CREW.map(agent => (
           <DeskGroup

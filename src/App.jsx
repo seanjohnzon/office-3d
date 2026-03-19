@@ -595,7 +595,7 @@ export default function App() {
 
   return (
     <StatusContext.Provider value={statuses}>
-    <div style={{ width:'100vw',height:'100vh',background:'#060C18' }}>
+    <div style={{ width:'100vw',height:'100vh',background:'#87CEEB' }}>
       <style>{`@keyframes pulseDot { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:0.4; transform:scale(1.5); } } @keyframes fadeInRow { from { opacity:0; transform:translateX(10px); } to { opacity:1; transform:translateX(0); } } @keyframes helpFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }`}</style>
       <RosterBar statuses={statuses} onFocusAgent={setFocusTarget} focusTarget={focusTarget} demoActive={demoActive} ambientEnabled={ambientEnabled} setAmbientEnabled={setAmbientEnabled} hasInteracted={hasInteracted} showDashboard={showDashboard} setShowDashboard={setShowDashboard} />
       <SprintHUD />
@@ -609,7 +609,7 @@ export default function App() {
         gl={{ antialias:true }}
         touch-action="none"
         onCreated={({ gl, scene }) => {
-          scene.fog = new THREE.FogExp2('#0a1520', 0.018)
+          scene.fog = null // Sunny sails in clear bright skies — no fog
           gl.domElement.addEventListener('webglcontextlost', (e) => {
             e.preventDefault()
             console.warn('WebGL context lost — will attempt restore')
@@ -623,8 +623,10 @@ export default function App() {
           shadow-camera-left={-20} shadow-camera-right={20}
           shadow-camera-top={20} shadow-camera-bottom={-20}
         />
-        <directionalLight position={[-6, 8, -4]} intensity={0.3} color="#8899FF" />
-        <pointLight position={[0, 5, 0]} intensity={0.5} color="#FFE8C0" distance={20} />
+        <directionalLight position={[-6, 8, -4]} intensity={0.8} color="#FFE8D0" />
+        <directionalLight position={[0, 4, 12]} intensity={0.6} color="#FFD700" /> {/* warm fill from bow */}
+        <pointLight position={[0, 5, 0]} intensity={1.0} color="#FFE8C0" distance={30} />
+        <pointLight position={[0, 8, 6]} intensity={0.6} color="#FFD080" distance={20} /> {/* figurehead glow */}
 
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />
         <CosmicBackdrop />

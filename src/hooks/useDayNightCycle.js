@@ -110,15 +110,23 @@ function computeSkyState() {
   }
 }
 
+// SUNNY always sails in bright golden daylight — no night mode
+function sunnyDaytimeState() {
+  return {
+    timeOfDay: 0.5,           // solar noon
+    skyTopColor: '#2A7FD4',   // rich blue sky
+    skyHorizonColor: '#7EC8E3', // light horizon
+    sunAngle: Math.PI / 2,    // sun directly overhead
+    sunVisible: true,
+    moonVisible: false,
+    ambientColor: '#FFF5E0',  // warm white sunlight
+    ambientIntensity: 1.2,    // bright!
+    dirLightIntensity: 2.0,   // strong directional sun
+    starsOpacity: 0.0,
+    sunColor: '#FFFFFF',
+  }
+}
+
 export default function useDayNightCycle() {
-  const [skyState, setSkyState] = useState(() => computeSkyState())
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setSkyState(computeSkyState())
-    }, 60000)
-    return () => clearInterval(interval)
-  }, [])
-
-  return skyState
+  return sunnyDaytimeState()
 }

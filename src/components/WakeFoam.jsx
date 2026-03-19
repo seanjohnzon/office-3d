@@ -48,7 +48,7 @@ export default function WakeFoam() {
   })
 
   return (
-    <instancedMesh ref={meshRef} args={[null, null, PARTICLE_COUNT]}>
+    <instancedMesh ref={meshRef} args={[undefined, undefined, PARTICLE_COUNT]}>
       <sphereGeometry args={[0.18, 6, 6]} />
       <meshStandardMaterial
         color="#e8f4ff"

@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState, useEffect, Component } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Stars, Text } from '@react-three/drei'
 import * as THREE from 'three'
@@ -511,6 +511,14 @@ function StrategyRoom() {
   )
 }
 
+// ══ Scene Error Boundary (prevents black-screen from effect component crashes) ══
+class SceneErrorBoundary extends Component {
+  constructor(props) { super(props); this.state = { hasError: false } }
+  static getDerivedStateFromError() { return { hasError: true } }
+  componentDidCatch(err) { console.warn('[SceneErrorBoundary] caught:', err) }
+  render() { return this.state.hasError ? null : this.props.children }
+}
+
 // ══ Main App ═════════════════════════════════════════════════════════════════
 export default function App() {
   const rawStatuses = useGatewayStatus()
@@ -610,8 +618,8 @@ export default function App() {
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />
         <CosmicBackdrop />
         <OceanPlane />
-        <StarField />
-        <WakeFoam />
+        <SceneErrorBoundary><StarField /></SceneErrorBoundary>
+        <SceneErrorBoundary><WakeFoam /></SceneErrorBoundary>
 
         {/* Ship Structure */}
         <WoodenDeck />

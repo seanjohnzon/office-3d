@@ -1,4 +1,4 @@
-﻿export const CREW = [
+export const CREW = [
   {
     name: 'Nami',
     ip: '10.0.0.152',
@@ -7,8 +7,8 @@
     role: 'Navigator',
     color: '#FF8C00',
     accentColor: '#FFB347',
-    position: [5, 0, -1],
-    deskPosition: [5, 0, -1],
+    position: [14, 0, -4],
+    deskPosition: [14, 0, -4],
   },
   {
     name: 'Franky',
@@ -18,8 +18,8 @@
     role: 'Shipwright',
     color: '#1E90FF',
     accentColor: '#63B3ED',
-    position: [5, 0, 3],
-    deskPosition: [5, 0, 3],
+    position: [14, 0, 8],
+    deskPosition: [14, 0, 8],
   },
   {
     name: 'Chopper',
@@ -29,8 +29,8 @@
     role: 'Doctor / QA',
     color: '#E84393',
     accentColor: '#F687B3',
-    position: [-5, 0, -1],
-    deskPosition: [-5, 0, -1],
+    position: [-14, 0, -4],
+    deskPosition: [-14, 0, -4],
   },
   {
     name: 'Robin',
@@ -40,8 +40,8 @@
     role: 'Archaeologist',
     color: '#8B4BE8',
     accentColor: '#B57BF5',
-    position: [-5, 0, -5],
-    deskPosition: [-5, 0, -5],
+    position: [-14, 0, -14],
+    deskPosition: [-14, 0, -14],
   },
   {
     name: 'Brook',
@@ -51,8 +51,8 @@
     role: 'Musician',
     color: '#EEEEEE',
     accentColor: '#FFFFFF',
-    position: [5, 0, -5],
-    deskPosition: [5, 0, -5],
+    position: [14, 0, -14],
+    deskPosition: [14, 0, -14],
   },
   {
     name: 'Sanji',
@@ -62,8 +62,8 @@
     role: 'Automation',
     color: '#E8C44A',
     accentColor: '#F5D76E',
-    position: [0, 0, 5],
-    deskPosition: [0, 0, 5],
+    position: [0, 0, 14],
+    deskPosition: [0, 0, 14],
   },
   {
     name: 'Usopp',
@@ -73,7 +73,7 @@
     role: 'Requirements',
     color: '#8B6914',
     accentColor: '#C49A28',
-    position: [-5, 0, 3],
-    deskPosition: [-5, 0, 3],
+    position: [-10, 0, 8],
+    deskPosition: [-10, 0, 8],
   },
 ];

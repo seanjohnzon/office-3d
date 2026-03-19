@@ -31,6 +31,8 @@ import WorkshopStation from './components/WorkshopStation'
 import AnimatedMast from './components/AnimatedMast'
 import CaptainsDashboard from './components/CaptainsDashboard'
 import OceanPlane from './OceanPlane'
+import StarField from './components/StarField'
+import WakeFoam from './components/WakeFoam'
 
 // ══ Thousand Sunny Scene ══════════════════════════════════════════════════════
 
@@ -608,6 +610,8 @@ export default function App() {
         <Stars radius={80} depth={40} count={3000} factor={3} fade speed={0.3} />
         <CosmicBackdrop />
         <OceanPlane />
+        <StarField />
+        <WakeFoam />
 
         {/* Ship Structure */}
         <WoodenDeck />

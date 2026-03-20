@@ -18,7 +18,8 @@ export default function SprintHUD() {
     // Skip LAN fetches from HTTPS origin (mixed-content block)
     const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
     if (isHttps) {
-      setStats({ total: 15, done: 13, byStatus: { done: 13, 'in-progress': 1, queued: 1 }, offline: true })
+      // Live site can't reach LAN — show clean offline state, no stale numbers
+      setStats({ total: 0, done: 0, byStatus: {}, offline: true })
       return
     }
     fetch('http://10.0.0.152:18800/api/tasks')
@@ -105,10 +106,10 @@ export default function SprintHUD() {
             boxShadow: `0 0 6px ${barColor}88`,
           }} />
         </div>
-        <span style={{ color: barColor, fontWeight: 'bold', fontSize: '11px' }}>
-          {stats.done}/{stats.total}
+        <span style={{ color: stats.offline && stats.total === 0 ? '#445' : barColor, fontWeight: 'bold', fontSize: '11px' }}>
+          {stats.offline && stats.total === 0 ? '—' : `${stats.done}/${stats.total}`}
         </span>
-        {stats.offline && <span style={{ color: '#334', fontSize: '9px' }}>●</span>}
+        {stats.offline && <span style={{ color: '#445', fontSize: '9px' }}>●</span>}
       </div>
 
       {/* Expanded: breakdown */}
@@ -128,8 +129,8 @@ export default function SprintHUD() {
             <span style={{ color: barColor, fontWeight: 'bold' }}>{pct}%</span>
           </div>
           {stats.offline && (
-            <div style={{ marginTop: '4px', color: '#445', fontSize: '9px', textAlign: 'center' }}>
-              task board offline · cached estimate
+            <div style={{ marginTop: '4px', color: '#556', fontSize: '9px', textAlign: 'center' }}>
+              task board · LAN only
             </div>
           )}
         </div>

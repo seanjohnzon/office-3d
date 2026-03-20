@@ -1,63 +1,28 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import useIsMobile from '../hooks/useIsMobile'
+import useMCTasks, { isDone, summarizeStatuses } from '../hooks/useMCTasks'
 
 // Sprint label — update when sprint rolls over, or leave empty to show all tasks
 const SPRINT_LABEL = ''
 
-// Map status → done or not
-function isDone(status) {
-  return status === 'done' || status === 'complete' || status === 'completed' || status === 'closed'
-}
-
 export default function SprintHUD() {
   const { isMobile } = useIsMobile()
-  const [stats, setStats] = useState(null)
+  const { tasks, online, loading } = useMCTasks()
   const [expanded, setExpanded] = useState(false)
 
-  function fetchStats() {
-    // Skip LAN fetches from HTTPS origin (mixed-content block)
-    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-    if (isHttps) {
-      // Live site can't reach LAN — show clean offline state, no stale numbers
-      setStats({ total: 0, done: 0, byStatus: {}, offline: true })
-      return
-    }
-    fetch('http://10.0.0.152:18800/api/tasks')
-      .then(r => r.json())
-      .then(data => {
-        const arr = Array.isArray(data) ? data : (data.tasks || [])
-        // Filter to current sprint (or show all tasks if no sprint label set)
-        const sprint = SPRINT_LABEL
-          ? arr.filter(t => t.sprint === SPRINT_LABEL || (t.sprint && t.sprint.includes(SPRINT_LABEL)))
-          : []
-        const source = sprint.length > 0 ? sprint : arr
-        const total = source.length
-        const done = source.filter(t => isDone(t.status)).length
-        setStats({ total, done, byStatus: summarizeStatuses(source) })
-      })
-      .catch(() => {
-        // Offline — show zero state; real data will load when LAN is available
-        setStats({ total: 0, done: 0, byStatus: {}, offline: true })
-      })
-  }
+  if (loading && tasks.length === 0) return null
 
-  function summarizeStatuses(tasks) {
-    const counts = {}
-    for (const t of tasks) {
-      counts[t.status] = (counts[t.status] || 0) + 1
-    }
-    return counts
-  }
+  // Filter to sprint or show all
+  const sprint = SPRINT_LABEL
+    ? tasks.filter(t => t.sprint === SPRINT_LABEL || (t.sprint && t.sprint.includes(SPRINT_LABEL)))
+    : []
+  const source = sprint.length > 0 ? sprint : tasks
+  const total = source.length
+  const done = source.filter(t => isDone(t.status)).length
+  const byStatus = summarizeStatuses(source)
+  const offline = !online
 
-  useEffect(() => {
-    fetchStats()
-    const iv = setInterval(fetchStats, 60000)
-    return () => clearInterval(iv)
-  }, [])
-
-  if (!stats) return null
-
-  const pct = stats.total > 0 ? Math.round((stats.done / stats.total) * 100) : 0
+  const pct = total > 0 ? Math.round((done / total) * 100) : 0
   const barColor = pct >= 80 ? '#2ecc71' : pct >= 50 ? '#f39c12' : '#e74c3c'
 
   return (
@@ -106,10 +71,10 @@ export default function SprintHUD() {
             boxShadow: `0 0 6px ${barColor}88`,
           }} />
         </div>
-        <span style={{ color: stats.offline && stats.total === 0 ? '#445' : barColor, fontWeight: 'bold', fontSize: '11px' }}>
-          {stats.offline && stats.total === 0 ? '—' : `${stats.done}/${stats.total}`}
+        <span style={{ color: offline && total === 0 ? '#445' : barColor, fontWeight: 'bold', fontSize: '11px' }}>
+          {offline && total === 0 ? '—' : `${done}/${total}`}
         </span>
-        {stats.offline && <span style={{ color: '#445', fontSize: '9px' }}>●</span>}
+        {offline && <span style={{ color: '#445', fontSize: '9px' }}>●</span>}
       </div>
 
       {/* Expanded: breakdown */}
@@ -118,7 +83,7 @@ export default function SprintHUD() {
           <div style={{ color: '#88aacc', fontSize: '10px', letterSpacing: '0.8px', marginBottom: '6px', textTransform: 'uppercase' }}>
             {SPRINT_LABEL || 'Mission Control — All Tasks'}
           </div>
-          {Object.entries(stats.byStatus).map(([status, count]) => (
+          {Object.entries(byStatus).map(([status, count]) => (
             <div key={status} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', color: isDone(status) ? '#2ecc71' : status === 'in-progress' ? '#3498db' : status === 'blocked' ? '#e74c3c' : '#778ca3' }}>
               <span>{status}</span>
               <span style={{ fontWeight: 'bold' }}>{count}</span>
@@ -128,7 +93,7 @@ export default function SprintHUD() {
             <span>Progress</span>
             <span style={{ color: barColor, fontWeight: 'bold' }}>{pct}%</span>
           </div>
-          {stats.offline && (
+          {offline && (
             <div style={{ marginTop: '4px', color: '#556', fontSize: '9px', textAlign: 'center' }}>
               task board · LAN only
             </div>

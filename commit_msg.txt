@@ -1,1 +1,1 @@
-refactor: SprintHUD shows all MC tasks, whiteboard label Mission Control, cleanup temp scripts
+refactor: shared useMCTasks hook eliminates 3x duplicate fetch

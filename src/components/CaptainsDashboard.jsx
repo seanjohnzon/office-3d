@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
+import useMCTasks, { isDone, isInProgress, isQueued, isBlocked } from '../hooks/useMCTasks'
 import { CREW } from '../data/crewConfig'
 import { STATE_COLOR, STATE_LABEL } from './VoxelCharacter'
 
@@ -19,45 +20,20 @@ function nowTime() {
   return new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit', second: '2-digit' })
 }
 
-const TASKS_URL = 'http://10.0.0.152:18800/api/tasks'
 const GITHUB_API = 'https://api.github.com/repos/seanjohnzon/office-3d/commits?per_page=5'
 
 // ── sprint data hook ──────────────────────────────────────────────────────────
 
-function useSprintData(visible) {
-  const [sprint, setSprint] = useState(null)
-  const timerRef = useRef(null)
-
-  async function fetchSprint() {
-    // Skip LAN fetches from HTTPS origin (mixed-content block)
-    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:'
-    if (isHttps) {
-      setSprint(null)
-      return
-    }
-    try {
-      const res = await fetch(TASKS_URL, { signal: AbortSignal.timeout(6000) })
-      if (!res.ok) throw new Error('non-ok')
-      const tasks = await res.json()
-      const done = tasks.filter(t => t.status === 'completed' || t.status === 'done' || t.status === 'complete').length
-      const inProgress = tasks.filter(t => t.status === 'in-progress').length
-      const queued = tasks.filter(t => t.status === 'queued' || t.status === 'open').length
-      const blocked = tasks.filter(t => t.status === 'blocked').length
-      const total = tasks.length
-      setSprint({ done, inProgress, queued, blocked, total, online: true })
-    } catch {
-      setSprint(prev => prev ? { ...prev, online: false } : null)
-    }
-  }
-
-  useEffect(() => {
-    if (!visible) return
-    fetchSprint()
-    timerRef.current = setInterval(fetchSprint, 30000)
-    return () => clearInterval(timerRef.current)
-  }, [visible])
-
-  return sprint
+// Delegates to shared useMCTasks singleton -- no redundant fetch
+function useSprintData() {
+  const { tasks, online } = useMCTasks()
+  if (tasks.length === 0 && !online) return null
+  const done       = tasks.filter(t => isDone(t.status)).length
+  const inProgress = tasks.filter(t => isInProgress(t.status)).length
+  const queued     = tasks.filter(t => isQueued(t.status)).length
+  const blocked    = tasks.filter(t => isBlocked(t.status)).length
+  const total      = tasks.length
+  return { done, inProgress, queued, blocked, total, online }
 }
 
 // ── commits hook ─────────────────────────────────────────────────────────────
@@ -108,7 +84,7 @@ function ProgressBar({ done, total }) {
 // ── main component ────────────────────────────────────────────────────────────
 
 export default function CaptainsDashboard({ visible, onClose, statuses, demoActive }) {
-  const sprint = useSprintData(visible)
+  const sprint = useSprintData()
   const commits = useCommitsData(visible)
   const [lastUpdated, setLastUpdated] = useState(nowTime())
   const timerRef = useRef(null)

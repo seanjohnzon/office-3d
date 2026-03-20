@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react'
 
 const FALLBACK = {
-  header: "THOUSAND SUNNY \u2693 D2.27",
-  line1: "D2.26 \u2713 Ocean / D2.27 \u2713 Stars+Wake",
-  line2: "D2.28 \u2192 Next",
-  statusColor: "#2ecc71"
+  header: "THOUSAND SUNNY \u2693 LIVE",
+  line1: "Mission Control offline",
+  line2: "Awaiting task board...",
+  statusColor: "#778ca3"
 }
 
 export default function useWhiteboardData() {
@@ -33,7 +33,7 @@ export default function useWhiteboardData() {
         const line2 = `\ud83d\udce6 ${queued} queued  \ud83d\uded1 ${blocked} blocked`
         const statusColor = blocked > 0 ? '#e74c3c' : queued > 0 ? '#f39c12' : '#2ecc71'
 
-        setData({ header: "SPRINT 2 \u2693 LIVE", line1, line2, statusColor })
+        setData({ header: "MISSION CONTROL \u2693 LIVE", line1, line2, statusColor })
       } catch {
         setData(FALLBACK)
       }

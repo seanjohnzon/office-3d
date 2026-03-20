@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import useIsMobile from '../hooks/useIsMobile'
 
-const SPRINT_LABEL = 'Sprint 2 — 3D Office'
+// Sprint label — update when sprint rolls over, or leave empty to show all tasks
+const SPRINT_LABEL = ''
 
 // Map status → done or not
 function isDone(status) {
@@ -24,25 +25,18 @@ export default function SprintHUD() {
       .then(r => r.json())
       .then(data => {
         const arr = Array.isArray(data) ? data : (data.tasks || [])
-        // Filter to current sprint
-        const sprint = arr.filter(t =>
-          t.sprint === SPRINT_LABEL ||
-          (t.sprint && t.sprint.includes('Sprint 2'))
-        )
-        if (sprint.length === 0) {
-          // Fallback: use all tasks if sprint field missing
-          const total = arr.length
-          const done = arr.filter(t => isDone(t.status)).length
-          setStats({ total, done, byStatus: summarizeStatuses(arr) })
-          return
-        }
-        const total = sprint.length
-        const done = sprint.filter(t => isDone(t.status)).length
-        setStats({ total, done, byStatus: summarizeStatuses(sprint) })
+        // Filter to current sprint (or show all tasks if no sprint label set)
+        const sprint = SPRINT_LABEL
+          ? arr.filter(t => t.sprint === SPRINT_LABEL || (t.sprint && t.sprint.includes(SPRINT_LABEL)))
+          : []
+        const source = sprint.length > 0 ? sprint : arr
+        const total = source.length
+        const done = source.filter(t => isDone(t.status)).length
+        setStats({ total, done, byStatus: summarizeStatuses(source) })
       })
       .catch(() => {
-        // Offline — show hardcoded sprint progress (D2.1–D2.12 phases done)
-        setStats({ total: 15, done: 13, byStatus: { done: 13, 'in-progress': 1, queued: 1 }, offline: true })
+        // Offline — show zero state; real data will load when LAN is available
+        setStats({ total: 0, done: 0, byStatus: {}, offline: true })
       })
   }
 
@@ -92,7 +86,7 @@ export default function SprintHUD() {
       {/* Collapsed: pill with progress */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
         <span style={{ color: '#88aacc', fontSize: '10px', letterSpacing: '1px', textTransform: 'uppercase' }}>
-          {isMobile ? 'S2' : 'Sprint 2'}
+          {isMobile ? 'MC' : 'Tasks'}
         </span>
         {/* Bar */}
         <div style={{
@@ -121,7 +115,7 @@ export default function SprintHUD() {
       {expanded && (
         <div style={{ marginTop: '8px', borderTop: '1px solid rgba(100,200,255,0.10)', paddingTop: '8px' }}>
           <div style={{ color: '#88aacc', fontSize: '10px', letterSpacing: '0.8px', marginBottom: '6px', textTransform: 'uppercase' }}>
-            Sprint 2 — 3D Office
+            {SPRINT_LABEL || 'Mission Control — All Tasks'}
           </div>
           {Object.entries(stats.byStatus).map(([status, count]) => (
             <div key={status} style={{ display: 'flex', justifyContent: 'space-between', padding: '2px 0', color: isDone(status) ? '#2ecc71' : status === 'in-progress' ? '#3498db' : status === 'blocked' ? '#e74c3c' : '#778ca3' }}>

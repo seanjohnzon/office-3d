@@ -14,3 +14,13 @@ html, body, #root {
   overflow: hidden;
   background: #0a0a0f;
 }
+
+/* ── Mobile touch optimization ── */
+canvas { touch-action: none; }
+body { overscroll-behavior: none; }
+
+@media (max-width: 768px) {
+  /* Shrink roster bar crew cards on small screens */
+  .roster-agent-name { font-size: 10px !important; }
+  .roster-agent-role { display: none; }
+}

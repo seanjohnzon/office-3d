@@ -348,3 +348,139 @@ export function ThousandSunnyHull() {
     </group>
   )
 }
+
+export function ThousandSunnyDeck() {
+  // Color palette
+  const deckWood = '#8B5E2E'      // warm dark oak for deck planks
+  const deckWoodLight = '#A0722A' // lighter plank alternates
+  const grassGreen = '#2D7A2D'    // Sunny's lawn green
+  const hullBrown = '#5C3317'     // hull exterior dark wood
+  const hullGold = '#C8960A'      // gold trim stripe
+  const hullRail = '#4A2810'      // dark rail wood
+
+  return (
+    <group>
+      {/* ── MAIN DECK FLOOR (grass lawn — Sunny's iconic feature) ── */}
+      <mesh rotation={[-Math.PI/2,0,0]} position={[0,0.05,0]} receiveShadow>
+        <planeGeometry args={[22,20]} />
+        <meshStandardMaterial color={grassGreen} roughness={0.9} />
+      </mesh>
+
+      {/* Wood deck planks — alternating strips */}
+      {[-9,-7,-5,-3,-1,1,3,5,7,9].map((x,i) => (
+        <mesh key={x} rotation={[-Math.PI/2,0,0]} position={[x,0.04,0]} receiveShadow>
+          <planeGeometry args={[1.8,20]} />
+          <meshStandardMaterial color={i%2===0 ? deckWood : deckWoodLight} roughness={0.8} />
+        </mesh>
+      ))}
+      {/* Plank gap lines */}
+      {[-10,-8,-6,-4,-2,0,2,4,6,8,10].map(x => (
+        <mesh key={x} rotation={[-Math.PI/2,0,0]} position={[x,0.06,0]}>
+          <planeGeometry args={[0.06,20]} />
+          <meshStandardMaterial color="#3A2008" />
+        </mesh>
+      ))}
+
+      {/* ── HULL SIDES ── */}
+      <mesh position={[-11.5,-1.2,0]} rotation={[0,0,0.18]} castShadow receiveShadow>
+        <boxGeometry args={[0.8,2.6,20]} />
+        <meshStandardMaterial color={hullBrown} roughness={0.85} />
+      </mesh>
+      <mesh position={[11.5,-1.2,0]} rotation={[0,0,-0.18]} castShadow receiveShadow>
+        <boxGeometry args={[0.8,2.6,20]} />
+        <meshStandardMaterial color={hullBrown} roughness={0.85} />
+      </mesh>
+      <mesh position={[0,-1.2,-10.5]} rotation={[0.18,0,0]} castShadow receiveShadow>
+        <boxGeometry args={[22,2.6,0.8]} />
+        <meshStandardMaterial color={hullBrown} roughness={0.85} />
+      </mesh>
+      <mesh position={[0,-1.2,10.5]} rotation={[-0.18,0,0]} castShadow receiveShadow>
+        <boxGeometry args={[22,2.6,0.8]} />
+        <meshStandardMaterial color={hullBrown} roughness={0.85} />
+      </mesh>
+      <mesh rotation={[-Math.PI/2,0,0]} position={[0,-2.5,0]} receiveShadow>
+        <planeGeometry args={[22,20]} />
+        <meshStandardMaterial color="#3A1E08" roughness={1.0} />
+      </mesh>
+
+      {/* ── GOLD TRIM STRIPE ── */}
+      <mesh position={[-11.2,0.1,0]} castShadow>
+        <boxGeometry args={[0.22,0.22,20.4]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.6} />
+      </mesh>
+      <mesh position={[11.2,0.1,0]} castShadow>
+        <boxGeometry args={[0.22,0.22,20.4]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.6} />
+      </mesh>
+      <mesh position={[0,0.1,-10.2]} castShadow>
+        <boxGeometry args={[22.4,0.22,0.22]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.6} />
+      </mesh>
+      <mesh position={[0,0.1,10.2]} castShadow>
+        <boxGeometry args={[22.4,0.22,0.22]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.6} />
+      </mesh>
+
+      {/* ── DECK EDGE RAIL ── */}
+      <mesh position={[-10.8,0.6,0]} castShadow>
+        <boxGeometry args={[0.28,1.0,20]} />
+        <meshStandardMaterial color={hullRail} roughness={0.8} />
+      </mesh>
+      <mesh position={[10.8,0.6,0]} castShadow>
+        <boxGeometry args={[0.28,1.0,20]} />
+        <meshStandardMaterial color={hullRail} roughness={0.8} />
+      </mesh>
+      <mesh position={[0,0.6,10.8]} castShadow>
+        <boxGeometry args={[22,1.0,0.28]} />
+        <meshStandardMaterial color={hullRail} roughness={0.8} />
+      </mesh>
+      <mesh position={[-5.5,0.6,-10.8]} castShadow>
+        <boxGeometry args={[11,1.0,0.28]} />
+        <meshStandardMaterial color={hullRail} roughness={0.8} />
+      </mesh>
+      <mesh position={[5.5,0.6,-10.8]} castShadow>
+        <boxGeometry args={[11,1.0,0.28]} />
+        <meshStandardMaterial color={hullRail} roughness={0.8} />
+      </mesh>
+
+      {/* ── RAIL POSTS ── */}
+      {[-9,-7,-5,-3,-1,1,3,5,7,9].map(x => (
+        <React.Fragment key={x}>
+          <mesh position={[x,0.9,-10.8]} castShadow>
+            <boxGeometry args={[0.14,1.6,0.14]} />
+            <meshStandardMaterial color={hullRail} roughness={0.7} />
+          </mesh>
+          <mesh position={[x,0.9,10.8]} castShadow>
+            <boxGeometry args={[0.14,1.6,0.14]} />
+            <meshStandardMaterial color={hullRail} roughness={0.7} />
+          </mesh>
+        </React.Fragment>
+      ))}
+      {[-9,-7,-5,-3,-1,1,3,5,7,9].map(z => (
+        <React.Fragment key={z}>
+          <mesh position={[-10.8,0.9,z]} castShadow>
+            <boxGeometry args={[0.14,1.6,0.14]} />
+            <meshStandardMaterial color={hullRail} roughness={0.7} />
+          </mesh>
+          <mesh position={[10.8,0.9,z]} castShadow>
+            <boxGeometry args={[0.14,1.6,0.14]} />
+            <meshStandardMaterial color={hullRail} roughness={0.7} />
+          </mesh>
+        </React.Fragment>
+      ))}
+      {/* Top handrail bar */}
+      <mesh position={[-10.8,1.7,0]} castShadow>
+        <boxGeometry args={[0.12,0.12,20.4]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.5} />
+      </mesh>
+      <mesh position={[10.8,1.7,0]} castShadow>
+        <boxGeometry args={[0.12,0.12,20.4]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.5} />
+      </mesh>
+      <mesh position={[0,1.7,10.8]} castShadow>
+        <boxGeometry args={[22,0.12,0.12]} />
+        <meshStandardMaterial color={hullGold} roughness={0.3} metalness={0.5} />
+      </mesh>
+    </group>
+  )
+}

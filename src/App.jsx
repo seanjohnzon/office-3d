@@ -36,11 +36,173 @@ import WakeFoam from './components/WakeFoam'
 import ShipBob from './components/ShipBob'
 import useDayNightCycle from './hooks/useDayNightCycle'
 import DynamicSky from './components/DynamicSky'
-import ShipDeck, { shipWidthAtZ, ShipHullShaped, ThousandSunnyHull } from './components/ship/ShipStructure'
+import ShipDeck, { shipWidthAtZ, ShipHullShaped, ThousandSunnyHull, ThousandSunnyDeck } from './components/ship/ShipStructure'
 import OceanSkyEnvironment, { WoodenDeck, GrassLawn } from './components/ship/ShipEnvironment'
 import Mast, { CrowsNest, NavigationWheel, Cannon, LionFigurehead, LuffyAtFigurehead, CaptainsLog } from './components/ship/ShipProps'
 import StrategyRoom, { RoomBox, AquariumBar, TangerineGrove, MusicLounge, SickBay, RobinsLibrary, CrowsNestTower, MensQuarters } from './components/ship/ShipRooms'
 import SceneErrorBoundary from './components/SceneErrorBoundary'
+
+
+function SunnyProps() {
+  const mastWood   = '#6B3A0F'
+  const sailCream  = '#F5EDD0'
+  const lionYellow = '#E8A020'
+  const lionGold   = '#C87010'
+  const metalGray  = '#7A8A8A'
+  const ropeColor  = '#C8A878'
+
+  return (
+    <group>
+
+      {/* MAIN MAST - center of deck, tall */}
+      {/* Base step */}
+      <mesh position={[0, 0.35, -1]} castShadow>
+        <boxGeometry args={[0.7, 0.7, 0.7]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      {/* Lower mast */}
+      <mesh position={[0, 4.0, -1]} castShadow>
+        <cylinderGeometry args={[0.22, 0.28, 8.0, 10]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      {/* Upper mast */}
+      <mesh position={[0, 10.5, -1]} castShadow>
+        <cylinderGeometry args={[0.12, 0.20, 5.0, 8]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      {/* Mast tip */}
+      <mesh position={[0, 13.2, -1]} castShadow>
+        <cylinderGeometry args={[0.04, 0.12, 1.0, 6]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+
+      {/* CROW'S NEST */}
+      {/* Platform */}
+      <mesh position={[0, 8.8, -1]} castShadow>
+        <boxGeometry args={[2.2, 0.18, 2.2]} />
+        <meshStandardMaterial color={mastWood} roughness={0.7} />
+      </mesh>
+      {/* Crow nest walls */}
+      <mesh position={[0, 9.3, -2.0]} castShadow>
+        <boxGeometry args={[2.2, 0.8, 0.18]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      <mesh position={[0, 9.3, 0.0]} castShadow>
+        <boxGeometry args={[2.2, 0.8, 0.18]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      <mesh position={[-1.0, 9.3, -1]} castShadow>
+        <boxGeometry args={[0.18, 0.8, 2.2]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      <mesh position={[1.0, 9.3, -1]} castShadow>
+        <boxGeometry args={[0.18, 0.8, 2.2]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+
+      {/* MAIN SAIL - furled horizontal crossbeam + rolled sail */}
+      {/* Crossbeam */}
+      <mesh position={[0, 7.0, -1]} castShadow>
+        <boxGeometry args={[9.0, 0.24, 0.24]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      {/* Rolled sail lying along x axis */}
+      <mesh position={[0, 6.55, -1]} rotation={[0, 0, Math.PI/2]} castShadow>
+        <cylinderGeometry args={[0.28, 0.28, 8.2, 10]} />
+        <meshStandardMaterial color={sailCream} roughness={0.9} />
+      </mesh>
+
+      {/* LION FIGUREHEAD at bow */}
+      {/* Lion mane */}
+      <mesh position={[0, 1.8, -12.5]} castShadow>
+        <sphereGeometry args={[1.8, 10, 8]} />
+        <meshStandardMaterial color={lionYellow} roughness={0.7} />
+      </mesh>
+      {/* Lion face */}
+      <mesh position={[0, 1.8, -13.8]} castShadow>
+        <sphereGeometry args={[1.2, 10, 8]} />
+        <meshStandardMaterial color="#F0C060" roughness={0.6} />
+      </mesh>
+      {/* Left eye */}
+      <mesh position={[-0.45, 2.1, -14.9]} castShadow>
+        <sphereGeometry args={[0.18, 7, 7]} />
+        <meshStandardMaterial color="#111" />
+      </mesh>
+      {/* Right eye */}
+      <mesh position={[0.45, 2.1, -14.9]} castShadow>
+        <sphereGeometry args={[0.18, 7, 7]} />
+        <meshStandardMaterial color="#111" />
+      </mesh>
+      {/* Nose */}
+      <mesh position={[0, 1.7, -15.0]} castShadow>
+        <boxGeometry args={[0.28, 0.18, 0.18]} />
+        <meshStandardMaterial color={lionGold} roughness={0.6} metalness={0.2} />
+      </mesh>
+      {/* Mouth */}
+      <mesh position={[0, 1.35, -14.95]} castShadow>
+        <boxGeometry args={[0.6, 0.14, 0.14]} />
+        <meshStandardMaterial color={lionGold} roughness={0.7} />
+      </mesh>
+      {/* Neck */}
+      <mesh position={[0, 0.8, -11.8]} castShadow>
+        <cylinderGeometry args={[0.7, 0.9, 2.0, 10]} />
+        <meshStandardMaterial color={lionYellow} roughness={0.7} />
+      </mesh>
+
+      {/* HELM WHEEL at stern */}
+      {/* Pedestal */}
+      <mesh position={[0, 0.7, 8.5]} castShadow>
+        <boxGeometry args={[0.5, 1.4, 0.5]} />
+        <meshStandardMaterial color={mastWood} roughness={0.8} />
+      </mesh>
+      {/* Hub */}
+      <mesh position={[0, 1.8, 8.2]} castShadow>
+        <cylinderGeometry args={[0.25, 0.25, 0.18, 12]} />
+        <meshStandardMaterial color={mastWood} roughness={0.7} metalness={0.1} />
+      </mesh>
+      {/* Rim */}
+      <mesh position={[0, 1.8, 8.0]} castShadow>
+        <torusGeometry args={[1.1, 0.10, 8, 20]} />
+        <meshStandardMaterial color={mastWood} roughness={0.6} />
+      </mesh>
+      {/* Spokes */}
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
+        const angle = (deg * Math.PI) / 180
+        return (
+          <mesh key={i} position={[0, 1.8, 8.0]} rotation={[0, 0, angle]} castShadow>
+            <boxGeometry args={[0.08, 2.2, 0.08]} />
+            <meshStandardMaterial color={mastWood} roughness={0.7} />
+          </mesh>
+        )
+      })}
+      {/* Handles */}
+      {[0, 45, 90, 135, 180, 225, 270, 315].map((deg, i) => {
+        const angle = (deg * Math.PI) / 180
+        const x = Math.sin(angle) * 1.1
+        const y = 1.8 + Math.cos(angle) * 1.1
+        return (
+          <mesh key={i} position={[x, y, 7.92]} castShadow>
+            <cylinderGeometry args={[0.05, 0.05, 0.28, 6]} />
+            <meshStandardMaterial color={mastWood} roughness={0.7} />
+          </mesh>
+        )
+      })}
+
+      {/* ROPE LINES from mast to bow/stern */}
+      {/* Forward stay */}
+      <mesh position={[0, 5.0, -5.5]} rotation={[0.7, 0, 0]} castShadow>
+        <cylinderGeometry args={[0.04, 0.04, 10.0, 6]} />
+        <meshStandardMaterial color={ropeColor} roughness={0.9} />
+      </mesh>
+      {/* Aft stay */}
+      <mesh position={[0, 5.0, 4.5]} rotation={[-0.7, 0, 0]} castShadow>
+        <cylinderGeometry args={[0.04, 0.04, 10.0, 6]} />
+        <meshStandardMaterial color={ropeColor} roughness={0.9} />
+      </mesh>
+
+    </group>
+  )
+}
 
 export default function App() {
   const rawStatuses = useGatewayStatus()
@@ -157,14 +319,16 @@ export default function App() {
         {/* Ship content — all bobs with the ocean */}
         <ShipBob>
           {/* Ship Structure */}
-          <ShipDeck />
-          <ShipHullShaped />
+          <ThousandSunnyDeck />
           <LionFigurehead />
           <LuffyAtFigurehead />
 
           {/* Masts */}
           <AnimatedMast position={[-8, 0, -12]} />
           <AnimatedMast position={[8, 0, -12]} />
+
+          {/* SunnyProps - decorative mast, crow nest, figurehead, helm */}
+          <SunnyProps />
 
           {/* Captain's Log (was Whiteboard) */}
           <CaptainsLog data={whiteboardData} />
@@ -261,9 +425,11 @@ export default function App() {
       <GatewayBanner statuses={statuses} demoActive={demoActive} />
       <CrewTicker statuses={statuses} />
 
-      {!isMobile && <div style={{ position:'fixed',bottom:'46px',right:'18px',color:'#334455',fontFamily:'monospace',fontSize:'11px',pointerEvents:'none' }}>
-        Hover character for portrait · Drag to orbit · Scroll to zoom
-      </div>}
+      <div style={{ position:'fixed',bottom:'46px',right:'18px',color:'#334455',fontFamily:'monospace',fontSize:'11px',pointerEvents:'none' }}>
+        {typeof window !== 'undefined' && ('ontouchstart' in window)
+          ? '1-finger rotate · 2-finger pinch zoom'
+          : 'Hover for portrait · Drag to orbit · Scroll to zoom'}
+      </div>
     </div>
     </StatusContext.Provider>
   )

@@ -27,37 +27,68 @@ function truncate(str, max) {
   return str.length <= max ? str : str.slice(0, max - 1) + '…'
 }
 
+const TASK_SNAPSHOT_URLS = [
+  'https://seanjohnzon.github.io/mission-control/data/tasks.json',
+  './data/tasks.json',
+]
+
+function normalizeTasks(data) {
+  return Array.isArray(data) ? data : (data?.tasks || [])
+}
+
+function selectDisplayTasks(arr) {
+  const statusOrder = { 'in-progress': 0, 'queued': 1, 'blocked': 2, 'open': 3 }
+  return arr
+    .filter(t => ACTIVE_STATUSES.has(t.status) && (t.assigned || t.assignee_id))
+    .sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9))
+    .slice(0, 8)
+}
+
+async function fetchTaskSnapshot() {
+  for (const url of TASK_SNAPSHOT_URLS) {
+    try {
+      const response = await fetch(url, { cache: 'no-store' })
+      if (!response.ok) continue
+      const data = await response.json()
+      const selected = selectDisplayTasks(normalizeTasks(data))
+      if (selected.length) return selected
+    } catch (err) {
+      // keep trying fallbacks
+    }
+  }
+  return []
+}
+
 export default function TaskFeed() {
   const { isMobile } = useIsMobile()
   const [tasks, setTasks] = useState([])
   const [error, setError] = useState(null)
 
-  function fetchTasks() {
-    // Skip LAN fetches from HTTPS origin (mixed-content block)
-    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:';
-    if (isHttps) {
-      setError('offline')
+  async function fetchTasks() {
+    const isHttps = typeof window !== 'undefined' && window.location.protocol === 'https:'
+
+    if (!isHttps) {
+      try {
+        const response = await fetch('http://10.0.0.152:18800/api/tasks', { cache: 'no-store' })
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const data = await response.json()
+        setTasks(selectDisplayTasks(normalizeTasks(data)))
+        setError(null)
+        return
+      } catch (err) {
+        // Fall through to static snapshot for public/demo resilience
+      }
+    }
+
+    const snapshotTasks = await fetchTaskSnapshot()
+    if (snapshotTasks.length) {
+      setTasks(snapshotTasks)
+      setError(null)
       return
     }
-    fetch('http://10.0.0.152:18800/api/tasks')
-      .then(r => r.json())
-      .then(data => {
-        const arr = Array.isArray(data) ? data : (data.tasks || [])
-        // Sort: in-progress first, then queued, then blocked/open
-        const statusOrder = { 'in-progress': 0, 'queued': 1, 'blocked': 2, 'open': 3 }
-        const filtered = arr
-          .filter(t =>
-            ACTIVE_STATUSES.has(t.status) &&
-            (t.assigned || t.assignee_id)
-          )
-          .sort((a, b) => (statusOrder[a.status] ?? 9) - (statusOrder[b.status] ?? 9))
-          .slice(0, 8)
-        setTasks(filtered)
-        setError(null)
-      })
-      .catch(err => {
-        setError('offline')
-      })
+
+    setTasks([])
+    setError('offline')
   }
 
   useEffect(() => {
